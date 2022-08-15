@@ -55,8 +55,6 @@ public class ServletContext {
             //MemberService memberService = new MemberService(memberDao);
             ObjectMapper objectMapper = new ObjectMapper();
 
-            sessionFactory.close();
-
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080
 
             tomcat.start(); // there is a default port on your computer for testing, 8080 this is a "developers port"
