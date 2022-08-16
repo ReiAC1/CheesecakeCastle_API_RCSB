@@ -55,11 +55,11 @@ public class ServletContext {
             MenuItemDao menuItemDao = new MenuItemDao(sessionFactory);
             UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
 
-            UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
-
             ObjectMapper objectMapper = new ObjectMapper();
 
-            tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService));
+            UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao, objectMapper);
+
+            tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
 
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080

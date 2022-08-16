@@ -1,5 +1,7 @@
 package com.revature.restaurant_api.payments;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,7 +11,8 @@ import java.sql.Date;
 public class UserPaymentModel {
     @Id
     @Column(name = "id", nullable = false)
-    private long id;
+    private int id;
+    @JsonIgnore
     private double balance;
     private Date exp_date;
     private String ccv;
@@ -19,11 +22,23 @@ public class UserPaymentModel {
     // todo: change this to an actual Customer type
     private long customerId;
 
-    public Long getId() {
+    public UserPaymentModel() { }
+
+    public UserPaymentModel(int id, double balance, Date exp_date, String ccv, String zipcode, String provider, long customerId) {
+        this.id = id;
+        this.balance = balance;
+        this.exp_date = exp_date;
+        this.ccv = ccv;
+        this.zipcode = zipcode;
+        this.provider = provider;
+        this.customerId = customerId;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

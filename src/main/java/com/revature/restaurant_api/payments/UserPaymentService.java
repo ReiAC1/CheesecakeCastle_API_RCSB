@@ -1,14 +1,21 @@
 package com.revature.restaurant_api.payments;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.restaurant_api.util.TokenHandler;
+import com.revature.restaurant_api.util.TokenHeader;
+
 import java.sql.Date;
 import java.time.Instant;
 
 public class UserPaymentService {
 
     UserPaymentDao userPaymentDao;
+    ObjectMapper objectMapper;
 
-    public UserPaymentService(UserPaymentDao userPaymentDao) {
+    public UserPaymentService(UserPaymentDao userPaymentDao, ObjectMapper objectMapper) {
         this.userPaymentDao = userPaymentDao;
+        this.objectMapper = objectMapper;
     }
 
     // Creates a new UserPaymentModel and inserts it into the database
@@ -45,6 +52,36 @@ public class UserPaymentService {
     // returns a UserPaymentModel by ID
     public UserPaymentModel getByID(int id) {
         return userPaymentDao.getByID(id);
+    }
+
+    public UserPaymentModel getByToken(String token) {
+        // validate token
+        if (token == null || token.isEmpty())
+            return null;
+
+        String[] split = token.split("\\.");
+
+        // ensure we have a proper SHA256 hash
+        if (split[1].length() != 64)
+            return null;
+
+        try {
+            // get the token's header, and then from that, get the UserPaymentModel based on header
+            TokenHeader header = objectMapper.readValue(split[0], TokenHeader.class);
+            UserPaymentModel model = userPaymentDao.getByID(header.id);
+
+            // if our model is null, or if the token handler cannot validate, return null
+            if (model == null || !TokenHandler.getInstance().isTokenValid(token, objectMapper.writeValueAsString(model)))
+                return null;
+
+            // otherwise return model
+            return model;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+
+            // returns null on exception
+            return null;
+        }
     }
 
     // Checks if the given UserPaymentModel is valid

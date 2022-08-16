@@ -1,7 +1,6 @@
 package com.revature.restaurant_api.payments;
 
 import com.revature.restaurant_api.util.interfaces.Crudable;
-import org.apache.catalina.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -111,7 +110,7 @@ public class UserPaymentDao implements Crudable<UserPaymentModel> {
             Session s = sessionFactory.openSession();
 
             // Using a query, we can select a java class from the database
-            Query query = s.createQuery("FROM com.revature.restaurant_api.UserPaymentModel UP WHERE UP.id = :id");
+            Query query = s.createQuery("FROM com.revature.restaurant_api.payments.UserPaymentModel UP WHERE UP.id = :id");
             // ensure we use parameters to avoid potential sql injection
             query.setParameter("id", id);
 
