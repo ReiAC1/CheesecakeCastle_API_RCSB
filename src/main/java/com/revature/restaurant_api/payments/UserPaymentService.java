@@ -30,6 +30,18 @@ public class UserPaymentService {
         return userPaymentDao.create(model);
     }
 
+
+    public boolean update(UserPaymentModel model) {
+        if (!validatePaymentModel(model))
+            return false;
+
+        return userPaymentDao.update(model);
+    }
+
+    public boolean delete(UserPaymentModel model) {
+        return userPaymentDao.delete(model);
+    }
+
     // returns a UserPaymentModel by ID
     public UserPaymentModel getByID(int id) {
         return userPaymentDao.getByID(id);
