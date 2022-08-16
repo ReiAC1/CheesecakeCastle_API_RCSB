@@ -1,12 +1,12 @@
 package com.revature.restaurant_api.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.restaurant_api.menu.MenuCategory;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
 import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
+import com.revature.restaurant_api.payments.UserPaymentServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
@@ -14,14 +14,10 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import java.io.File;
-import java.sql.Date;
-import java.sql.DriverManager;
 
 // ServletContext - Sets up Servlets associated with the restaurant web api
 public class ServletContext {
@@ -62,6 +58,9 @@ public class ServletContext {
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
 
             ObjectMapper objectMapper = new ObjectMapper();
+
+            tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService));
+            standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
 
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080
 
