@@ -1,2 +1,4 @@
-package com.revature.restaurant_api.users;public class UsersDao {
+package com.revature.restaurant_api.users;
+
+public class UsersDao {
 }

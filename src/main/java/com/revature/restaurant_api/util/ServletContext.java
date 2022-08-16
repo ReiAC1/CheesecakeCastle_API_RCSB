@@ -1,7 +1,6 @@
 package com.revature.restaurant_api.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.restaurant_api.menu.MenuCategory;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
 import org.apache.catalina.LifecycleException;
@@ -11,13 +10,10 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import java.io.File;
-import java.sql.DriverManager;
 
 // ServletContext - Sets up Servlets associated with the restaurant web api
 public class ServletContext {
