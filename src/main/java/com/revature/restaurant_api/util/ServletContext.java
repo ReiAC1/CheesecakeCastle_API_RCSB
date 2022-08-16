@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.menu.MenuCategory;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
+import com.revature.restaurant_api.payments.UserPaymentDao;
+import com.revature.restaurant_api.payments.UserPaymentModel;
+import com.revature.restaurant_api.payments.UserPaymentService;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
@@ -17,6 +20,7 @@ import org.hibernate.cfg.Configuration;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import java.io.File;
+import java.sql.Date;
 import java.sql.DriverManager;
 
 // ServletContext - Sets up Servlets associated with the restaurant web api
@@ -30,6 +34,7 @@ public class ServletContext {
 
         // add our annotated classes (aka the classes that should be persisted in our database)
         conf.addAnnotatedClass(MenuItem.class);
+        conf.addAnnotatedClass(UserPaymentModel.class);
 
         // and finally build the session factory
         sessionFactory = conf.buildSessionFactory();
@@ -50,9 +55,12 @@ public class ServletContext {
 
             standardContext.setResources(resourceRoot); // at this point the tomcat server now has access and knowledge of classes information
 
-            // Left for DI for later use
+            // Create our Daos and Services for Dependency Injection
             MenuItemDao menuItemDao = new MenuItemDao(sessionFactory);
-            //MemberService memberService = new MemberService(memberDao);
+            UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
+
+            UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
+
             ObjectMapper objectMapper = new ObjectMapper();
 
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080
