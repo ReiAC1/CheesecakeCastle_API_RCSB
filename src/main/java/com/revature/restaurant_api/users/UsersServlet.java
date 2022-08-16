@@ -1,4 +1,4 @@
-package com.revature.restaurant_api.menu;
+package com.revature.restaurant_api.users;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,8 +13,8 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
 
+        String id = req.getParameter("id"); //what datatype is ok here? am I pull json, so strings are fine?
 
-        resp.getWriter().write("<h1>Welcome to the userServlet</h1>");
     }
 
     @Override
