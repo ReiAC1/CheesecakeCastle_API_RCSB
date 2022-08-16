@@ -70,11 +70,19 @@ public class TokenHandler {
 
 
     // encodes the JSON using the current time as a reference for expiration
+    // jsonObject | the object, in JSON fortmat, you wish to create a token for
+    // id | the ID of the object
+    // expiration of header is auto-generated
+    // returns a token with a proper header
     public String encodeJSON(String jsonObject, int id) {
         return encodeJSON(jsonObject, id, Instant.now().toEpochMilli() + (3600 * 2 * 1000));
     }
 
     // encodes a JSON string using a predefined id and expiration
+    // jsonObject | the object, in JSON fortmat, you wish to create a token for
+    // id | the ID of the object
+    // expiration | the time, in millis, that the token expires
+    // returns a token with a proper header
     public String encodeJSON(String jsonObject, int id, long expiration) {
 
         try {
