@@ -1,5 +1,7 @@
 package com.revature.restaurant_api.menu;
 
+import com.revature.restaurant_api.menu.MenuCategory;
+
 import javax.persistence.*;
 
 @Entity(name = "menu_items")
