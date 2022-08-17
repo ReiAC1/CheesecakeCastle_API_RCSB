@@ -1,5 +1,9 @@
 package com.revature.restaurant_api.users;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.restaurant_api.users.dto.interfaces.Authable;
+import com.revature.restaurant_api.users.response.UsersResponse;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -8,13 +12,30 @@ import java.io.IOException;
 
 
 
-public class UsersServlet extends HttpServlet {
+public class UsersServlet extends HttpServlet implements Authable {
+
+    private final UsersService usersService;
+    private final ObjectMapper objectMapper;
+
+    //logger not implemented
+    //private final Logger logger = LogManager.getLogger();
+    public UsersServlet(UsersService usersService, ObjectMapper objectMapper) {
+        this.usersService = usersService;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
+                int id = req.getParameter("id"); //what datatype is ok here? am I pull json, so strings are fine?
+                UsersModel authUser = (UsersModel) req.getSession().getAttribute(("authUsers"));
 
-        String id = req.getParameter("id"); //what datatype is ok here? am I pull json, so strings are fine?
-
+                //if (id != null){
+                //    logger.info("Email entered {}", id);
+                //}
+            if (id != null)
+                try {
+                    UsersResponse usersResponse = usersService.getByID(id);
+                }
     }
 
     @Override
