@@ -18,6 +18,7 @@ import org.hibernate.cfg.Configuration;
 
 import javax.servlet.ServletException;
 import java.io.File;
+import java.sql.Date;
 
 // ServletContext - Sets up Servlets associated with the restaurant web api
 public class ServletContext {
@@ -58,6 +59,8 @@ public class ServletContext {
             ObjectMapper objectMapper = new ObjectMapper();
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao, objectMapper);
+
+            //duserPaymentService.create(100, new Date(124, 8, 1), "032", "32792", "Test", 0);
 
             tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");

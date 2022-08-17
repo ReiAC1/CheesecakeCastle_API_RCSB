@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 
-@Entity(name = "users_payment")
+@Entity
+@Table(name = "users_payment")
 public class UserPaymentModel {
     @Id
     @Column(name = "id", nullable = false)

@@ -19,7 +19,7 @@ public class UserPaymentService {
     }
 
     // Creates a new UserPaymentModel and inserts it into the database
-    public UserPaymentModel create(double balance, Date exp_date, String ccv, String zipcode, String provider, long cID) {
+    public UserPaymentModel create(double balance, Date exp_date, String ccv, String zipcode, String provider, int cID) {
         // create our model
         UserPaymentModel model = new UserPaymentModel();
         model.setBalance(balance);
@@ -94,10 +94,10 @@ public class UserPaymentService {
 
         // otherwise check if data is valid
         return (model.getBalance() >= 0) &&
-                (model.getExp_date().toInstant().toEpochMilli() > Instant.now().toEpochMilli()) &&
+                (model.getExp_date().getTime() >= Instant.now().toEpochMilli()) &&
                 (model.getCcv().length() == 3) &&
                 (model.getZipcode().length() == 5) &&
                 (!model.getProvider().isEmpty()) &&
-                (model.getId() > 0);
+                (model.getId() >= 0);
     }
 }

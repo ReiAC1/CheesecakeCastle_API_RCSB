@@ -79,7 +79,7 @@ public class TokenHandler {
     }
 
     // encodes a JSON string using a predefined id and expiration
-    // jsonObject | the object, in JSON fortmat, you wish to create a token for
+    // jsonObject | the object, in JSON format, you wish to create a token for
     // id | the ID of the object
     // expiration | the time, in millis, that the token expires
     // returns a token with a proper header

@@ -110,12 +110,14 @@ public class UserPaymentDao implements Crudable<UserPaymentModel> {
             Session s = sessionFactory.openSession();
 
             // Using a query, we can select a java class from the database
-            Query query = s.createQuery("FROM com.revature.restaurant_api.payments.UserPaymentModel UP WHERE UP.id = :id");
+            Query query = s.createQuery("FROM UserPaymentModel WHERE id = :id");
             // ensure we use parameters to avoid potential sql injection
             query.setParameter("id", id);
 
             // get our list of results
             List<UserPaymentModel> results = query.getResultList();
+
+            s.close();
 
             // ensure that we have results, if not return null
             if (results.size() == 0)
