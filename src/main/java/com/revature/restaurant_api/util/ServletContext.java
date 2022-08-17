@@ -7,6 +7,7 @@ import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
 import com.revature.restaurant_api.payments.UserPaymentServlet;
+import com.revature.restaurant_api.users.UsersModel;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
@@ -31,6 +32,7 @@ public class ServletContext {
         // add our annotated classes (aka the classes that should be persisted in our database)
         conf.addAnnotatedClass(MenuItem.class);
         conf.addAnnotatedClass(UserPaymentModel.class);
+        conf.addAnnotatedClass(UsersModel.class);
 
         // and finally build the session factory
         sessionFactory = conf.buildSessionFactory();
