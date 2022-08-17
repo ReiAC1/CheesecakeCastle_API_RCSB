@@ -2,7 +2,9 @@ package com.revature.restaurant_api.users;
 import java.sql.Date;
 
 public class UsersService {
-    UsersDao  usersDao;
+    private final UsersDao  usersDao;
+    private UsersModel  sessionUser = null;
+
     //our service is to handle user requests
     //we are using the dao for CRUD mehods
     //also using it to retrieve data for the user
@@ -13,6 +15,7 @@ public class UsersService {
     //method to create our user
     // ensure paramters match
     //inquire hibernate column (should we force by variable manipulation)
+
     public UsersModel create(int id, String firstName, String lastName, String email, Date registrationDate, String password) {
         UsersModel newUser = new UsersModel();
         newUser.setId(id);
@@ -24,6 +27,12 @@ public class UsersService {
 
         return usersDao.create(newUser);
 
+    }
+
+    public UsersModel login(String email, String password){
+        UsersModel user = usersDao.loginCredentialCheck(email, password);
+        sessionUser = user;
+        return user;
     }
 
     public UsersModel getByID(int id){

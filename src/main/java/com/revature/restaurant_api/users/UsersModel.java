@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.sql.Date;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class UsersModel {
     //@Table(name = "users")
         @Id
