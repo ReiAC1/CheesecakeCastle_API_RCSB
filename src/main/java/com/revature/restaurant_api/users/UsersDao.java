@@ -91,7 +91,7 @@ public class UsersDao implements Crudable<UsersModel> {
         try {
             Session newSession = sessionFactory.openSession();
 
-            Query query = newSession.createQuery("from Users where email= :email and password= :password");
+            Query query = newSession.createQuery("from UsersModel where email= :email and password= :password");
             query.setParameter("email", email);
             query.setParameter("password", password);
             List<UsersModel> data = query.getResultList();
@@ -113,7 +113,7 @@ public class UsersDao implements Crudable<UsersModel> {
         try {
             Session newSession = sessionFactory.openSession();
 
-            Query query = newSession.createQuery("from Users where email= :email and password= :password");
+            Query query = newSession.createQuery("from UsersModel where id = :id");
             query.setParameter("id" , id);
             List<UsersModel> data = query.getResultList();
 
@@ -129,4 +129,3 @@ public class UsersDao implements Crudable<UsersModel> {
         }
     }
     }
-

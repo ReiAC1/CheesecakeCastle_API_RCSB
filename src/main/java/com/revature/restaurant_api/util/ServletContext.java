@@ -59,7 +59,6 @@ public class ServletContext {
             MenuItemDao menuItemDao = new MenuItemDao(sessionFactory);
             UsersDao usersDao = new UsersDao(sessionFactory);
             UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
-            UsersDao usersDao = new UsersDao(sessionFactory);
 
             ObjectMapper objectMapper = new ObjectMapper();
 
