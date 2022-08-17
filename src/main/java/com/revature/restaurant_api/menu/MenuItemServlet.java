@@ -7,12 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-<<<<<<< HEAD
 @WebServlet("/menuitem")
-=======
-
-
->>>>>>> sbox_users_branch
 public class MenuItemServlet extends HttpServlet {
 
     @Override
