@@ -1,11 +1,9 @@
 package com.revature.restaurant_api.payments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.revature.restaurant_api.users.UsersModel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
@@ -21,19 +19,20 @@ public class UserPaymentModel {
     private String zipcode;
     private String provider;
 
-    // todo: change this to an actual Customer type
-    private long customerId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UsersModel userModel;
 
     public UserPaymentModel() { }
 
-    public UserPaymentModel(int id, double balance, Date exp_date, String ccv, String zipcode, String provider, long customerId) {
+    public UserPaymentModel(int id, double balance, Date exp_date, String ccv, String zipcode, String provider, UsersModel model) {
         this.id = id;
         this.balance = balance;
         this.exp_date = exp_date;
         this.ccv = ccv;
         this.zipcode = zipcode;
         this.provider = provider;
-        this.customerId = customerId;
+        this.userModel = model;
     }
 
     public int getId() {
@@ -84,11 +83,11 @@ public class UserPaymentModel {
         this.provider = provider;
     }
 
-    public long getCustomerId() {
-        return customerId;
+    public UsersModel getUserModel() {
+        return userModel;
     }
 
-    public void setCustomerId(long customerId) {
-        this.customerId = customerId;
+    public void setUserModel(UsersModel userModel) {
+        this.userModel = userModel;
     }
 }
