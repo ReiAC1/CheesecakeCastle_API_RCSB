@@ -131,4 +131,25 @@ public class UserPaymentDao implements Crudable<UserPaymentModel> {
             return null;
         }
     }
+
+    public List<UserPaymentModel> getAllByUserID(int userId) {
+        // Create our session
+        Session s = sessionFactory.openSession();
+
+        // Using a query, we can select a java class from the database
+        Query query = s.createQuery("FROM UserPaymentModel WHERE user_id = :id");
+        // ensure we use parameters to avoid potential sql injection
+        query.setParameter("id", userId);
+
+        // get our list of results
+        List<UserPaymentModel> results = query.getResultList();
+
+        s.close();
+
+        // ensure that we have results, if not return null
+        if (results.size() == 0)
+            return null;
+
+        return results;
+    }
 }

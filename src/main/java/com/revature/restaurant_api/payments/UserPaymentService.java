@@ -2,11 +2,13 @@ package com.revature.restaurant_api.payments;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.util.TokenHandler;
 import com.revature.restaurant_api.util.TokenHeader;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.List;
 
 public class UserPaymentService {
 
@@ -19,7 +21,7 @@ public class UserPaymentService {
     }
 
     // Creates a new UserPaymentModel and inserts it into the database
-    public UserPaymentModel create(double balance, Date exp_date, String ccv, String zipcode, String provider, int cID) {
+    public UserPaymentModel create(double balance, Date exp_date, String ccv, String zipcode, String provider, UsersModel uModel) {
         // create our model
         UserPaymentModel model = new UserPaymentModel();
         model.setBalance(balance);
@@ -27,7 +29,7 @@ public class UserPaymentService {
         model.setCcv(ccv);
         model.setZipcode(zipcode);
         model.setProvider(provider);
-        model.setCustomerId(cID);
+        model.setUserModel(uModel);
 
         // if our payment model is invalid, return null
         if (!validatePaymentModel(model))
@@ -53,6 +55,11 @@ public class UserPaymentService {
     public UserPaymentModel getByID(int id) {
         return userPaymentDao.getByID(id);
     }
+
+    public List<UserPaymentModel> getAllByUserID(int userId) {
+        return userPaymentDao.getAllByUserID(userId);
+    }
+
 
     public UserPaymentModel getByToken(String token) {
         // validate token
