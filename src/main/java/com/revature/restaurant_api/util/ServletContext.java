@@ -10,6 +10,7 @@ import com.revature.restaurant_api.payments.UserPaymentServlet;
 import com.revature.restaurant_api.users.UsersDao;
 import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.UsersService;
+import com.revature.restaurant_api.util.web.AuthServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
@@ -61,6 +62,7 @@ public class ServletContext {
             UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
 
             ObjectMapper objectMapper = new ObjectMapper();
+            TokenHandler.setupInstance(objectMapper);
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao, objectMapper);
             UsersService usersService = new UsersService(usersDao);
@@ -69,6 +71,9 @@ public class ServletContext {
 
             tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, usersService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
+
+            tomcat.addServlet("", "AuthServlet", new AuthServlet(usersService, objectMapper));
+            standardContext.addServletMappingDecoded("/auth", "AuthServlet");
 
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080
 

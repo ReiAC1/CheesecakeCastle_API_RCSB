@@ -11,6 +11,7 @@ import java.sql.Date;
 public class UserPaymentModel {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     @JsonIgnore
     private double balance;

@@ -37,15 +37,11 @@ public class UserPaymentServlet extends HttpServlet {
         // the login token should be stored in our session
         String loginToken = (String)req.getSession().getAttribute("authMember");
 
-        // TODO: uncomment login auth once UsersService.login has been completed
-
         // if no login session is found, give an unauthorized status
-        //if (loginToken == null) {
-        //    resp.setStatus(401);
-        //    return;
-        //}
-
-        /*
+        if (loginToken == null) {
+            resp.setStatus(401);
+            return;
+        }
 
         // get the header of our token
         String headerS = loginToken.split("\\.")[0];
@@ -59,9 +55,6 @@ public class UserPaymentServlet extends HttpServlet {
             resp.setStatus(401);
             return;
         }
-
-        */
-
 
         String action = req.getParameter("action");
 
@@ -111,7 +104,29 @@ public class UserPaymentServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: add authentication
+
+        // the login token should be stored in our session
+        String loginToken = (String)req.getSession().getAttribute("authMember");
+
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
+            resp.setStatus(401);
+            return;
+        }
+
+        // get the header of our token
+        String headerS = loginToken.split("\\.")[0];
+        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
+
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = usersService.getByID(header.id);
+
+        // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
+        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+            resp.setStatus(401);
+            return;
+        }
+
         PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
 
         try {
@@ -130,21 +145,56 @@ public class UserPaymentServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        // the login token should be stored in our session
+        String loginToken = (String)req.getSession().getAttribute("authMember");
+
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
+            resp.setStatus(401);
+            return;
+        }
+
+        // get the header of our token
+        String headerS = loginToken.split("\\.")[0];
+        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
+
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = usersService.getByID(header.id);
+
+        // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
+        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+            resp.setStatus(401);
+            return;
+        }
+
+        // TODO: add logic for delete
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        // the login token should be stored in our session
+        String loginToken = (String)req.getSession().getAttribute("authMember");
+
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
+            resp.setStatus(401);
+            return;
+        }
+
+        // get the header of our token
+        String headerS = loginToken.split("\\.")[0];
+        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
+
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = usersService.getByID(header.id);
+
+        // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
+        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+            resp.setStatus(401);
+            return;
+        }
+
+        // Todo: add logic for update
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
-    }
-
-    @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doHead(req, resp);
-    }
 }
