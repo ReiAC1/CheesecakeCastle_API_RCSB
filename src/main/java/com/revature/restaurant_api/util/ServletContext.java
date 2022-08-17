@@ -7,7 +7,9 @@ import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
 import com.revature.restaurant_api.payments.UserPaymentServlet;
+import com.revature.restaurant_api.users.UsersDao;
 import com.revature.restaurant_api.users.UsersModel;
+import com.revature.restaurant_api.users.UsersService;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
@@ -55,15 +57,17 @@ public class ServletContext {
 
             // Create our Daos and Services for Dependency Injection
             MenuItemDao menuItemDao = new MenuItemDao(sessionFactory);
+            UsersDao usersDao = new UsersDao(sessionFactory);
             UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
 
             ObjectMapper objectMapper = new ObjectMapper();
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao, objectMapper);
+            UsersService usersService = new UsersService(usersDao);
 
             //duserPaymentService.create(100, new Date(124, 8, 1), "032", "32792", "Test", 0);
 
-            tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, objectMapper));
+            tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, usersService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
 
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080

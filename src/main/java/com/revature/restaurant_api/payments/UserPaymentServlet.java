@@ -6,6 +6,7 @@ import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.UsersService;
 import com.revature.restaurant_api.util.TokenHandler;
 import com.revature.restaurant_api.util.TokenHeader;
+import com.revature.restaurant_api.util.dto.PaymentDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +20,9 @@ public class UserPaymentServlet extends HttpServlet {
     private UsersService usersService;
     private ObjectMapper objectMapper;
 
-    public UserPaymentServlet(UserPaymentService userPaymentService, ObjectMapper objectMapper) {
+    public UserPaymentServlet(UserPaymentService userPaymentService, UsersService usersService, ObjectMapper objectMapper) {
         this.userPaymentService = userPaymentService;
+        this.usersService = usersService;
         this.objectMapper = objectMapper;
     }
 
@@ -109,7 +111,21 @@ public class UserPaymentServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("<h1>Welcome to the wonderful world of servlets, in doPost!!! yayyyyyy</h1>");
+        // TODO: add authentication
+        PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
+
+        try {
+            UserPaymentModel paymentModel = userPaymentService.create(paymentInfo.getBalance(), paymentInfo.getExp_date(),
+                    paymentInfo.getCcv(), paymentInfo.getZipcode(), paymentInfo.getProvider(),
+                    usersService.getByID(paymentInfo.getUserID()));
+
+            String payload = objectMapper.writeValueAsString(paymentModel);
+            resp.getWriter().println(payload);
+
+        } catch (Exception e) {
+            e.printStackTrace(resp.getWriter());
+            resp.setStatus(500);
+        }
     }
 
     @Override
