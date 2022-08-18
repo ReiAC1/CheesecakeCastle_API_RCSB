@@ -2,7 +2,7 @@ package com.revature.restaurant_api.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.users.dto.interfaces.Authable;
-import com.revature.restaurant_api.users.response.UsersResponse;
+import com.revature.restaurant_api.util.TokenHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +27,7 @@ public class UsersServlet extends HttpServlet implements Authable {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
                 String sId = req.getParameter("id");
-                UsersModel authUser = (UsersModel) req.getSession().getAttribute(("authUsers"));
+                UsersModel authUser = TokenHandler.getInstance().getAuthUser((String)req.getSession().getAttribute(("authMember")));
 
                 //if (id != null){
                 //    logger.info("Email entered {}", id);
