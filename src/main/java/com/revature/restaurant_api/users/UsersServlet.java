@@ -29,6 +29,12 @@ public class UsersServlet extends HttpServlet implements Authable {
                 String sId = req.getParameter("id");
                 UsersModel authUser = TokenHandler.getInstance().getAuthUser((String)req.getSession().getAttribute(("authMember")));
 
+                if (sId == null || sId.isEmpty()) {
+                    // handle for the "id" parameter not being set
+                }
+
+                int id = Integer.parseInt(sId);
+
                 //if (id != null){
                 //    logger.info("Email entered {}", id);
                 //}
