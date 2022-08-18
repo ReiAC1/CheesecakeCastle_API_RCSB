@@ -1,6 +1,6 @@
 package com.revature.restaurant_api.users;
 
-import com.revature.restaurant_api.users.dto.interfaces.Crudable;
+import com.revature.restaurant_api.util.interfaces.Crudable;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -8,10 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import java.io.IOException;
 import java.util.List;
 
 

@@ -19,6 +19,8 @@ public class UsersModel {
         private Date registrationDate;
         private String password;
 
+        private boolean isAdmin = false;
+
         public int getId() {
             return id;
         }

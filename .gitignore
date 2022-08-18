@@ -1,4 +1,5 @@
 .idea/
-target
+target/
 resources/
+out/
 src/main/resources/cfg.xml

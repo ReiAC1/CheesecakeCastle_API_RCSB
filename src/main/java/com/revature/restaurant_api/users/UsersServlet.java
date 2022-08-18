@@ -1,7 +1,7 @@
 package com.revature.restaurant_api.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.restaurant_api.users.dto.interfaces.Authable;
+import com.revature.restaurant_api.util.interfaces.Authable;
 import com.revature.restaurant_api.util.TokenHandler;
 
 import javax.servlet.ServletException;

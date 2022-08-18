@@ -1,4 +1,4 @@
-package com.revature.restaurant_api.users.dto.interfaces;
+package com.revature.restaurant_api.util.interfaces;
 
 import java.util.List;
 

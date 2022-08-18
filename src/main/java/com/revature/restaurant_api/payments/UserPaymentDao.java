@@ -1,6 +1,6 @@
 package com.revature.restaurant_api.payments;
 
-import com.revature.restaurant_api.users.dto.interfaces.Crudable;
+import com.revature.restaurant_api.util.interfaces.Crudable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
