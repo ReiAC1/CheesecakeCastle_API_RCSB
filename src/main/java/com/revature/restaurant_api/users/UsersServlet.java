@@ -26,16 +26,14 @@ public class UsersServlet extends HttpServlet implements Authable {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
-                int id = req.getParameter("id"); //what datatype is ok here? am I pull json, so strings are fine?
+                String sId = req.getParameter("id");
                 UsersModel authUser = (UsersModel) req.getSession().getAttribute(("authUsers"));
 
                 //if (id != null){
                 //    logger.info("Email entered {}", id);
                 //}
-            if (id != null)
-                try {
-                    UsersResponse usersResponse = usersService.getByID(id);
-                }
+            //if (sId != null)
+                //UsersResponse usersResponse = usersService.getByID(Integer.parseInt(sId));
     }
 
     @Override

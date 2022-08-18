@@ -113,11 +113,8 @@ public class UsersDao implements Crudable<UsersModel> {
         try {
             Session newSession = sessionFactory.openSession();
 
-<<<<<<< HEAD
             Query query = newSession.createQuery("from UsersModel where id = :id");
-=======
-            Query query = newSession.createQuery("from UsersModel where id= :id");
->>>>>>> sbox_users_branch
+
             query.setParameter("id" , id);
             List<UsersModel> data = query.getResultList();
 
@@ -132,9 +129,6 @@ public class UsersDao implements Crudable<UsersModel> {
             return null;
         }
     }
-<<<<<<< HEAD
-    }
-=======
 
     public boolean checkEmail(String email){
         try{
@@ -155,5 +149,3 @@ public class UsersDao implements Crudable<UsersModel> {
         }
     }
 }
-
->>>>>>> sbox_users_branch

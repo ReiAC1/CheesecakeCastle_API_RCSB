@@ -55,6 +55,10 @@ public class UsersService {
         if (!isEmailAvailable(newUser.getEmail())){
             throw new InvalidUserInputException("Email already registered");
         }
+
+        // TODO: fillout proper response
+
+        return null;
     }
 
     public UsersModel login(String email, String password){
