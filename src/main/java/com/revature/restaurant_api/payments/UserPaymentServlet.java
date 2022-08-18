@@ -44,15 +44,10 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
-        // get the header of our token
-        String headerS = loginToken.split("\\.")[0];
-        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
-
-        // try to get the UsersModel associated with the header
-        UsersModel uModel = usersService.getByID(header.id);
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
 
         // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
-        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+        if (uModel == null) {
             resp.setStatus(401);
             return;
         }
@@ -130,19 +125,14 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
-        // get the header of our token
-        String headerS = loginToken.split("\\.")[0];
-        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
-
         // try to get the UsersModel associated with the header
-        UsersModel uModel = usersService.getByID(header.id);
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
 
         // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
-        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+        if (uModel == null) {
             resp.setStatus(401);
             return;
         }
-
 
         // Retrieve the PaymentDTO
         // in this case, payment ID will be ignored since we are creating a value
@@ -182,15 +172,10 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
-        // get the header of our token
-        String headerS = loginToken.split("\\.")[0];
-        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
-
-        // try to get the UsersModel associated with the header
-        UsersModel uModel = usersService.getByID(header.id);
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
 
         // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
-        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+        if (uModel == null) {
             resp.setStatus(401);
             return;
         }
@@ -229,15 +214,11 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
-        // get the header of our token
-        String headerS = loginToken.split("\\.")[0];
-        TokenHeader header = objectMapper.readValue(headerS, TokenHeader.class);
-
         // try to get the UsersModel associated with the header
-        UsersModel uModel = usersService.getByID(header.id);
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
 
         // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
-        if (uModel == null || !TokenHandler.getInstance().isTokenValid(loginToken, objectMapper.writeValueAsString(uModel))) {
+        if (uModel == null) {
             resp.setStatus(401);
             return;
         }

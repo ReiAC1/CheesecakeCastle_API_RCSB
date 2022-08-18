@@ -12,7 +12,7 @@ class TokenHandlerTest {
 
     public TokenHandlerTest() {
         oMapper = new ObjectMapper();
-        TokenHandler.setupInstance(oMapper);
+        TokenHandler.setupInstance(oMapper, null);
     }
 
     @Test

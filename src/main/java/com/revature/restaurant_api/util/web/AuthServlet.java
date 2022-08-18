@@ -5,8 +5,6 @@ import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.UsersService;
 import com.revature.restaurant_api.util.TokenHandler;
 import com.revature.restaurant_api.util.dto.LoginCreds;
-import com.revature.restaurant_api.users.UsersService;
-import com.revature.restaurant_api.users.UsersModel;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

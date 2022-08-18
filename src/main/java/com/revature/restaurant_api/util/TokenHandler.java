@@ -3,6 +3,8 @@ package com.revature.restaurant_api.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.restaurant_api.users.UsersModel;
+import com.revature.restaurant_api.users.UsersService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -12,11 +14,15 @@ public class TokenHandler {
 
     private static TokenHandler tokenHandler;
     private ObjectMapper mapper;
+    private UsersService usersService;
 
-    private TokenHandler(ObjectMapper mapper) { this.mapper = mapper; }
+    private TokenHandler(ObjectMapper mapper, UsersService usersService){
+        this.mapper = mapper;
+        this.usersService = usersService;
+    }
 
-    public static void setupInstance(ObjectMapper mapper) {
-        tokenHandler = new TokenHandler(mapper);
+    public static void setupInstance(ObjectMapper mapper, UsersService usersService) {
+        tokenHandler = new TokenHandler(mapper, usersService);
     }
 
     public static TokenHandler getInstance() {
@@ -141,4 +147,32 @@ public class TokenHandler {
         return false;
     }
 
+
+    // Simple method for getting the authUser from a token digest
+    // token | the full token of the authUser
+    // returns null if invalid request or no user found
+    // returns the associated UsersModel otherwise
+    public UsersModel getAuthUser(String token) {
+       try {
+           // get the header of our token
+           String headerS = token.split("\\.")[0];
+           TokenHeader header = mapper.readValue(headerS, TokenHeader.class);
+
+           // try to get the UsersModel associated with the header
+           UsersModel uModel = usersService.getByID(header.id);
+
+           // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
+           if (uModel == null || !isTokenValid(token, mapper.writeValueAsString(uModel))) {
+               return null;
+           }
+
+           return uModel;
+       } catch (JsonMappingException e) {
+           e.printStackTrace();
+       } catch (JsonProcessingException e) {
+           e.printStackTrace();
+       }
+
+       return null;
+    }
 }

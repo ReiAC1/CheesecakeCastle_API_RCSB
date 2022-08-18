@@ -62,10 +62,11 @@ public class ServletContext {
             UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
 
             ObjectMapper objectMapper = new ObjectMapper();
-            TokenHandler.setupInstance(objectMapper);
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao, objectMapper);
             UsersService usersService = new UsersService(usersDao);
+
+            TokenHandler.setupInstance(objectMapper, usersService);
 
             //duserPaymentService.create(100, new Date(124, 8, 1), "032", "32792", "Test", 0);
 
