@@ -1,17 +1,17 @@
 package com.revature.restaurant_api.users;
 
-import com.revature.restaurant_api.util.interfaces.Crudable;
-import com.revature.restaurant_api.util.ServletContext;
+import com.revature.restaurant_api.users.dto.interfaces.Crudable;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.IOException;
-import java.nio.channels.AsynchronousServerSocketChannel;
 import java.util.List;
 
 
@@ -113,7 +113,11 @@ public class UsersDao implements Crudable<UsersModel> {
         try {
             Session newSession = sessionFactory.openSession();
 
+<<<<<<< HEAD
             Query query = newSession.createQuery("from UsersModel where id = :id");
+=======
+            Query query = newSession.createQuery("from UsersModel where id= :id");
+>>>>>>> sbox_users_branch
             query.setParameter("id" , id);
             List<UsersModel> data = query.getResultList();
 
@@ -128,4 +132,28 @@ public class UsersDao implements Crudable<UsersModel> {
             return null;
         }
     }
+<<<<<<< HEAD
     }
+=======
+
+    public boolean checkEmail(String email){
+        try{
+            Session userSession = sessionFactory.openSession();
+            Transaction transaction = userSession.beginTransaction();
+            Query query = userSession.createQuery("from UsersModel where email= :email");
+            query.setParameter("email", email);
+
+            UsersModel user = (UsersModel) query.uniqueResult();
+            transaction.commit();
+            if(user == null) return true;
+            return false;
+        } catch (HibernateException e){
+            e.printStackTrace();
+            return false;
+        } finally{
+            sessionFactory.close();
+        }
+    }
+}
+
+>>>>>>> sbox_users_branch
