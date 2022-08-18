@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserPaymentServlet extends HttpServlet {
@@ -93,7 +94,22 @@ public class UserPaymentServlet extends HttpServlet {
 
                 int userId = Integer.parseInt(req.getParameter("id"));
                 List<UserPaymentModel> payments = userPaymentService.getAllByUserID(userId);
-                String payload = objectMapper.writeValueAsString(payments);
+                List<PaymentDTO> payloadDTOs = new ArrayList<>();
+
+                for (UserPaymentModel payment : payments) {
+                    PaymentDTO dto = new PaymentDTO();
+                    dto.setId(payment.getId());
+                    dto.setUserID(payment.getUserModel().getId());
+                    dto.setBalance(payment.getBalance());
+                    dto.setCcv(payment.getCcv());
+                    dto.setProvider(payment.getProvider());
+                    dto.setZipcode(payment.getZipcode());
+                    dto.setExp_date(payment.getExp_date());
+
+                    payloadDTOs.add(dto);
+                }
+
+                String payload = objectMapper.writeValueAsString(payloadDTOs);
                 resp.getWriter().println(payload);
                 break;
             default: // default option is that the request was invalid, so we can throw a 400 error
@@ -127,6 +143,9 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
+
+        // Retrieve the PaymentDTO
+        // in this case, payment ID will be ignored since we are creating a value
         PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
 
         try {
@@ -134,7 +153,16 @@ public class UserPaymentServlet extends HttpServlet {
                     paymentInfo.getCcv(), paymentInfo.getZipcode(), paymentInfo.getProvider(),
                     usersService.getByID(paymentInfo.getUserID()));
 
-            String payload = objectMapper.writeValueAsString(paymentModel);
+            PaymentDTO dto = new PaymentDTO();
+            dto.setId(paymentModel.getId());
+            dto.setUserID(paymentModel.getUserModel().getId());
+            dto.setBalance(paymentModel.getBalance());
+            dto.setCcv(paymentModel.getCcv());
+            dto.setProvider(paymentModel.getProvider());
+            dto.setZipcode(paymentModel.getZipcode());
+            dto.setExp_date(paymentModel.getExp_date());
+
+            String payload = objectMapper.writeValueAsString(dto);
             resp.getWriter().println(payload);
 
         } catch (Exception e) {
@@ -167,7 +195,27 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
-        // TODO: add logic for delete
+        PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
+        UserPaymentModel pModel = new UserPaymentModel();
+        pModel.setBalance(paymentInfo.getBalance());
+        pModel.setUserModel(usersService.getByID(paymentInfo.getUserID()));
+        pModel.setExp_date(paymentInfo.getExp_date());
+        pModel.setCcv(paymentInfo.getCcv());
+        pModel.setZipcode(paymentInfo.getZipcode());
+        pModel.setProvider(paymentInfo.getProvider());
+        pModel.setId(paymentInfo.getId());
+
+        try {
+            boolean success = userPaymentService.delete(pModel);
+
+            String payload = objectMapper.writeValueAsString(success);
+            resp.getWriter().println(payload);
+
+        } catch (Exception e) {
+            e.printStackTrace(resp.getWriter());
+            resp.setStatus(500);
+        }
+
     }
 
     @Override
@@ -194,7 +242,26 @@ public class UserPaymentServlet extends HttpServlet {
             return;
         }
 
-        // Todo: add logic for update
+        PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
+        UserPaymentModel pModel = new UserPaymentModel();
+        pModel.setBalance(paymentInfo.getBalance());
+        pModel.setUserModel(usersService.getByID(paymentInfo.getUserID()));
+        pModel.setExp_date(paymentInfo.getExp_date());
+        pModel.setCcv(paymentInfo.getCcv());
+        pModel.setZipcode(paymentInfo.getZipcode());
+        pModel.setProvider(paymentInfo.getProvider());
+        pModel.setId(paymentInfo.getId());
+
+        try {
+            boolean success = userPaymentService.update(pModel);
+
+            String payload = objectMapper.writeValueAsString(success);
+            resp.getWriter().println(payload);
+
+        } catch (Exception e) {
+            e.printStackTrace(resp.getWriter());
+            resp.setStatus(500);
+        }
     }
 
 }

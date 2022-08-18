@@ -3,6 +3,7 @@ package com.revature.restaurant_api.util.dto;
 import java.sql.Date;
 
 public class PaymentDTO {
+    private int id;
     private double balance;
     private Date exp_date;
     private String ccv;
@@ -58,4 +59,11 @@ public class PaymentDTO {
         this.userID = userID;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
