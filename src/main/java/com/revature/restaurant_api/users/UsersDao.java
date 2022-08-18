@@ -53,22 +53,33 @@ public class UsersDao implements Crudable<UsersModel> {
     }
 
     @Override
-    public boolean delete(UsersModel deletedUser) {
+    public boolean delete(UsersModel deletedObject) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(String deletedUser) {
         try {
             Session newSession = sessionFactory.openSession();
             newSession.beginTransaction();
             newSession.save(deletedUser);
             newSession.getTransaction().commit();
             newSession.close();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return true;
+        //return true;
     }
 
     @Override
     public List<UsersModel> getAll() {
+        return null;
+    }
+
+    @Override
+    public List<UsersModel> findAll() {
         try {
             Session newSession = sessionFactory.openSession();
             CriteriaBuilder builder = sessionFactory.getCriteriaBuilder();
@@ -78,6 +89,46 @@ public class UsersDao implements Crudable<UsersModel> {
             newSession.close();
             return data;
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public UsersModel getByID(int id) {
+        try {
+            Session newSession = sessionFactory.openSession();
+            Query query = newSession.createQuery("from UsersModel where id = :id");
+            query.setParameter("id" , id);
+            List<UsersModel> data = query.getResultList();
+
+            if(data.size() == 0) {
+                return null;
+            }
+
+            return data.get(0);
+
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public UsersModel getById(int id) {
+        try {
+            Session newSession = sessionFactory.openSession();
+            Query query = newSession.createQuery("from UsersModel where id = :id");
+            query.setParameter("id" , id);
+            List<UsersModel> data = query.getResultList();
+
+            if(data.size() == 0) {
+                return null;
+            }
+
+            return data.get(0);
+
+        } catch (HibernateException e) {
             e.printStackTrace();
             return null;
         }
@@ -107,12 +158,10 @@ public class UsersDao implements Crudable<UsersModel> {
     }
 
     @Override
-    public UsersModel getByID(int id){
+    public UsersModel findById(int id){
         try {
             Session newSession = sessionFactory.openSession();
-
             Query query = newSession.createQuery("from UsersModel where id = :id");
-
             query.setParameter("id" , id);
             List<UsersModel> data = query.getResultList();
 

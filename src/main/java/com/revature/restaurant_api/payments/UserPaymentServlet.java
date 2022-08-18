@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.UsersService;
+import com.revature.restaurant_api.users.response.UsersResponse;
 import com.revature.restaurant_api.util.TokenHandler;
 import com.revature.restaurant_api.util.TokenHeader;
 import com.revature.restaurant_api.util.dto.PaymentDTO;
@@ -70,7 +71,7 @@ public class UserPaymentServlet extends HttpServlet {
 
                 int id = Integer.parseInt(req.getParameter("id"));
                 try {
-                    UserPaymentModel model = userPaymentService.getByID(id);
+                    UserPaymentModel model = userPaymentService.getByID(id);//changed
                     if (model == null) {
                         resp.setStatus(400);
                         return;
@@ -183,7 +184,7 @@ public class UserPaymentServlet extends HttpServlet {
         PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
         UserPaymentModel pModel = new UserPaymentModel();
         pModel.setBalance(paymentInfo.getBalance());
-        pModel.setUserModel(usersService.getByID(paymentInfo.getUserID()));
+        pModel.setUserModel(usersService.getByID(paymentInfo.getUserID())); //added to user service to return id
         pModel.setExp_date(paymentInfo.getExp_date());
         pModel.setCcv(paymentInfo.getCcv());
         pModel.setZipcode(paymentInfo.getZipcode());
@@ -226,7 +227,7 @@ public class UserPaymentServlet extends HttpServlet {
         PaymentDTO paymentInfo = objectMapper.readValue(req.getInputStream(), PaymentDTO.class);
         UserPaymentModel pModel = new UserPaymentModel();
         pModel.setBalance(paymentInfo.getBalance());
-        pModel.setUserModel(usersService.getByID(paymentInfo.getUserID()));
+        pModel.setUserModel(usersService.getByID(paymentInfo.getUserID())); //added
         pModel.setExp_date(paymentInfo.getExp_date());
         pModel.setCcv(paymentInfo.getCcv());
         pModel.setZipcode(paymentInfo.getZipcode());

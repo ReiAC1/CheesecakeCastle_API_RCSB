@@ -8,9 +8,9 @@ import java.sql.Date;
 @Entity
 @Table(name = "users")
 public class UsersModel {
-    //@Table(name = "users")
         @Id
         @Column(name = "id", nullable = false)
+        @GeneratedValue(strategy=GenerationType.AUTO)
         private int id;
         @JsonIgnore
         private String firstName;

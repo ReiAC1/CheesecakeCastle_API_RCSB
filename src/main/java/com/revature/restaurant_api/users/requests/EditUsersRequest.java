@@ -3,7 +3,9 @@ package com.revature.restaurant_api.users.requests;
 
 public class EditUsersRequest   {
 
-    private String fullName;
+    private int id;
+    private String firstName;
+    private String lastName;
     private String email; //pulling the id from the parent class
     private String password;
 
@@ -11,12 +13,28 @@ public class EditUsersRequest   {
         super();
     }
 
-    public String getFullName() {
-        return fullName;
+    public int getId() {
+        return id;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastname(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPassword() {
@@ -38,7 +56,9 @@ public class EditUsersRequest   {
     @Override
     public String toString() {
         return "EditMemberRequest{" +
-                "fullName='" + fullName + '\'' +
+                "id='" + id + '\'' +
+                "firstName='" + firstName + '\'' +
+                "lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';

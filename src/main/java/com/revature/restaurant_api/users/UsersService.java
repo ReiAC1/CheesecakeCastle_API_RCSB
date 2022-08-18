@@ -1,4 +1,5 @@
 package com.revature.restaurant_api.users;
+import com.revature.restaurant_api.users.requests.EditUsersRequest;
 import com.revature.restaurant_api.users.requests.NewRegistrationRequest;
 import com.revature.restaurant_api.users.response.UsersResponse;
 import com.revature.restaurant_api.util.exceptions.InvalidUserInputException;
@@ -7,12 +8,14 @@ import org.apache.catalina.User;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UsersService {
     private final UsersDao  usersDao;
-    private UsersModel  sessionUser = null;
+    private UsersModel  sessionUser;
 
     //our service is to handle user requests
     //we are using the dao for CRUD mehods
@@ -35,8 +38,32 @@ public class UsersService {
         newUser.setPassword(password);
 
         return usersDao.create(newUser);
-
     }
+    public boolean update(EditUsersRequest editUsersRequest) throws InvalidUserInputException {
+        UsersModel updateReqUser = usersDao.findById(editUsersRequest.getId());
+
+        Predicate<String> notNullOrEmpty = (str) -> str != null && !str.trim().equals("");
+
+        if (notNullOrEmpty.test(editUsersRequest.getFirstName())){
+            updateReqUser.setFirstName(editUsersRequest.getFirstName());
+        }
+        if (notNullOrEmpty.test(editUsersRequest.getLastName())){
+            updateReqUser.setLastName(editUsersRequest.getFirstName());
+        }
+
+        if (notNullOrEmpty.test(editUsersRequest.getEmail())){
+            if(!isEmailAvailable(editUsersRequest.getEmail())){
+                throw new ResourcePersistanceException("Email already in use. Please sign in with that or try again.");
+            }
+            updateReqUser.setEmail(updateReqUser.getEmail());
+        }
+        return usersDao.update(updateReqUser);
+    }
+
+    public boolean remove(String id){
+        return usersDao.delete(id);
+    }
+
 
     public UsersResponse registerUsers(NewRegistrationRequest newUserRegistration) throws InvalidUserInputException, ResourcePersistanceException {
         UsersModel newUser = new UsersModel();
@@ -66,9 +93,15 @@ public class UsersService {
         sessionUser = user;
         return user;
     }
-
-    public UsersModel getByID(int id){
+//conflict, renamed
+    /*public UsersModel getByID(int id){
         return usersDao.getByID(id);
+    }*/
+
+    public UsersResponse findById(int id){
+        UsersModel user = usersDao.findById(id);
+        UsersResponse responseUser = new UsersResponse(user);
+        return responseUser;
     }
 
     public boolean isUserValid(UsersModel newUser){
@@ -85,6 +118,17 @@ public class UsersService {
         return true;
     }
 
+    public List<UsersResponse> readAll(){
+        List<UsersResponse> usersResponses = usersDao.findAll()
+                                                     .stream()
+                                                     .map(UsersResponse::new)
+                                                     .collect(Collectors.toList());
+             return usersResponses;
+        }
+
+
     public boolean isEmailAvailable(String email){return usersDao.checkEmail(email); }
 
+    public UsersModel getByID(int userID) {return usersDao.findById(userID);
+    }
 }
