@@ -86,6 +86,7 @@ public class UsersService {
         }
 
         // TODO: fillout proper response
+        usersDao.create(newUser);
 
         return new UsersResponse(newUser);
     }
