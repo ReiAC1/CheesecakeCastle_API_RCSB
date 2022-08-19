@@ -40,7 +40,7 @@ public class UsersService {
         return usersDao.create(newUser);
     }
     public boolean update(EditUsersRequest editUsersRequest) throws InvalidUserInputException {
-        UsersModel updateReqUser = usersDao.findById(editUsersRequest.getId());
+        UsersModel updateReqUser = usersDao.getByID(editUsersRequest.getId());
 
         Predicate<String> notNullOrEmpty = (str) -> str != null && !str.trim().equals("");
 
@@ -60,20 +60,22 @@ public class UsersService {
         return usersDao.update(updateReqUser);
     }
 
-    public boolean remove(String id){
-        return usersDao.delete(id);
+    public boolean remove(int id){
+        UsersModel model = usersDao.getByID(id);
+        if (model == null)
+            return false;
+        return usersDao.delete(model);
     }
 
 
     public UsersResponse registerUsers(NewRegistrationRequest newUserRegistration) throws InvalidUserInputException, ResourcePersistanceException {
         UsersModel newUser = new UsersModel();
 
-        newUser.setId(newUserRegistration.getId());
         newUser.setFirstName(newUserRegistration.getFirstName());
         newUser.setLastName(newUserRegistration.getLastName());
         newUser.setEmail(newUserRegistration.getEmail());
+        newUser.setPassword(newUserRegistration.getPassword());
         newUser.setRegistrationDate(new Date(System.currentTimeMillis()));
-        newUser.setId(Integer.parseInt(UUID.randomUUID().toString()));
 
         //logger goes here for registration confirmation
         if(!isUserValid(newUser)){
@@ -93,21 +95,15 @@ public class UsersService {
         sessionUser = user;
         return user;
     }
-//conflict, renamed
-    /*public UsersModel getByID(int id){
-        return usersDao.getByID(id);
-    }*/
 
-    public UsersResponse findById(int id){
-        UsersModel user = usersDao.findById(id);
-        UsersResponse responseUser = new UsersResponse(user);
-        return responseUser;
-    }
 
     public boolean isUserValid(UsersModel newUser){
         //Predicate<String> notNullOrEmpty = (str) -> str != null && !str.trim().equals("");
         //charles suggested we implement the predicate
         //creating mvp first
+
+        System.out.println(newUser);
+
         if(newUser == null) return false; //check to see if they have entered empty set
         if(newUser.getFirstName() == null || newUser.getFirstName().trim().equals("")) return false;
         if(newUser.getLastName() == null || newUser.getLastName().trim().equals("")) return false;
@@ -119,7 +115,7 @@ public class UsersService {
     }
 
     public List<UsersResponse> readAll(){
-        List<UsersResponse> usersResponses = usersDao.findAll()
+        List<UsersResponse> usersResponses = usersDao.getAll()
                                                      .stream()
                                                      .map(UsersResponse::new)
                                                      .collect(Collectors.toList());
@@ -129,6 +125,7 @@ public class UsersService {
 
     public boolean isEmailAvailable(String email){return usersDao.checkEmail(email); }
 
-    public UsersModel getByID(int userID) {return usersDao.findById(userID);
+    public UsersModel getByID(int userID) {
+        return usersDao.getByID(userID);
     }
 }

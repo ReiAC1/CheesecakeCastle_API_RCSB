@@ -27,9 +27,6 @@ public class AuthServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LoginCreds loginCreds = objectMapper.readValue(req.getInputStream(), LoginCreds.class);
 
-        System.out.println(loginCreds.getEmail());
-        System.out.println(loginCreds.getPassword());
-
         UsersModel member = usersService.login(loginCreds.getEmail(), loginCreds.getPassword());
 
         String payload = objectMapper.writeValueAsString(member);

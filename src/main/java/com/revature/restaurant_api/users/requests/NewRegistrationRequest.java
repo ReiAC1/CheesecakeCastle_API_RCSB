@@ -1,7 +1,6 @@
 package com.revature.restaurant_api.users.requests;
 
 public class NewRegistrationRequest {
-    private int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -10,22 +9,18 @@ public class NewRegistrationRequest {
     public NewRegistrationRequest() {
     }
 
-    public NewRegistrationRequest(int id,String firstName, String lastName, String email, String password) {
-        this.id = id;
+    public NewRegistrationRequest(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
 
-    public int getId() { return id; }
-
-    public void setId(int id) { this.id = id;}
-
     public String getFirstName() {
         return firstName;
     }
-    public void setLastName(String firstName) {
+
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
@@ -33,7 +28,7 @@ public class NewRegistrationRequest {
         return lastName;
     }
 
-    public void setLastname(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -53,11 +48,9 @@ public class NewRegistrationRequest {
         this.password = password;
     }
 
-
     @Override
     public String toString() {
         return "NewRegistractionRequest{" +
-                "id='" + id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

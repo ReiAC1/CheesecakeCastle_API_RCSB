@@ -2,6 +2,7 @@ package com.revature.restaurant_api.payments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.revature.restaurant_api.users.UsersModel;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -19,7 +20,6 @@ public class UserPaymentModel {
     private String ccv;
     private String zipcode;
     private String provider;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UsersModel userModel;

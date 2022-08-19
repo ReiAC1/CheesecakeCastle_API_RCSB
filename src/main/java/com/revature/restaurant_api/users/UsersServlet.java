@@ -33,7 +33,7 @@ public class UsersServlet extends HttpServlet implements Authable {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                 String sId = req.getParameter("id");
-                UsersModel authUser = TokenHandler.getInstance().getAuthUser((String)req.getSession().getAttribute(("authUser")));
+                //UsersModel authUser = TokenHandler.getInstance().getAuthUser((String)req.getSession().getAttribute(("authUser")));
 
                 if (sId == null || sId.isEmpty()) {
                     // handle for the "id" parameter not being set
@@ -71,9 +71,11 @@ public class UsersServlet extends HttpServlet implements Authable {
             resp.setStatus(201);
         } catch(InvalidUserInputException | ResourcePersistanceException e){
             //no logger
+            e.printStackTrace();
             respWriter.write(e.getMessage());
             resp.setStatus(404); // 404 not found thrown if user input is invalid
         } catch (Exception e){
+            e.printStackTrace();
             respWriter.write(e.getMessage() + " " + e.getClass().getName());
             resp.setStatus(500); //rollover for other exceptions
         }
@@ -86,7 +88,7 @@ public class UsersServlet extends HttpServlet implements Authable {
         String id = req.getParameter("id");
         String email = req.getParameter("email");
         if (id != null){
-            usersService.remove(id);
+            usersService.remove(Integer.parseInt(id));
             res.getWriter().write("User: " + id + "\n email: " + email + "has been deleted");
         }else {
             res.getWriter().write("Request requires valid email entry");
