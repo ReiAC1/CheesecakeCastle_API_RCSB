@@ -1,5 +1,6 @@
 package com.revature.restaurant_api.users;
 
+import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.util.interfaces.Crudable;
 
 import org.hibernate.HibernateException;
@@ -42,7 +43,7 @@ public class UsersDao implements Crudable<UsersModel> {
         try {
             Session newSession = sessionFactory.openSession();
             newSession.beginTransaction();
-            newSession.save(updatedUser);
+            newSession.update(updatedUser);
             newSession.getTransaction().commit();
             newSession.close();
         } catch (Exception e) {
@@ -54,39 +55,38 @@ public class UsersDao implements Crudable<UsersModel> {
 
     @Override
     public boolean delete(UsersModel deletedObject) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(String deletedUser) {
         try {
-            Session newSession = sessionFactory.openSession();
-            newSession.beginTransaction();
-            newSession.save(deletedUser);
-            newSession.getTransaction().commit();
-            newSession.close();
-            return true;
+            Session s = sessionFactory.openSession();
+
+            // begin transaction, utilize the delete function, and commit changes
+            s.beginTransaction();
+            s.delete(deletedObject);
+            s.getTransaction().commit();
+
+            s.close();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        //return true;
+
+        return true;
     }
 
     @Override
     public List<UsersModel> getAll() {
-        return null;
-    }
-
-    @Override
-    public List<UsersModel> findAll() {
         try {
-            Session newSession = sessionFactory.openSession();
-            CriteriaBuilder builder = sessionFactory.getCriteriaBuilder();
+            // open a session
+            Session s = sessionFactory.openSession();
+
+            // Create a CriteriaBuilder using our UserPaymentModel as a basis
+            CriteriaBuilder builder = s.getCriteriaBuilder();
             CriteriaQuery<UsersModel> criteria = builder.createQuery(UsersModel.class);
             criteria.from(UsersModel.class);
-            List<UsersModel> data = newSession.createQuery(criteria).getResultList();
-            newSession.close();
+
+            // We can then create a query based on our criteria
+            List<UsersModel> data = s.createQuery(criteria).getResultList();
+            s.close();
+
             return data;
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,26 +96,6 @@ public class UsersDao implements Crudable<UsersModel> {
 
     @Override
     public UsersModel getByID(int id) {
-        try {
-            Session newSession = sessionFactory.openSession();
-            Query query = newSession.createQuery("from UsersModel where id = :id");
-            query.setParameter("id" , id);
-            List<UsersModel> data = query.getResultList();
-
-            if(data.size() == 0) {
-                return null;
-            }
-
-            return data.get(0);
-
-        } catch (HibernateException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public UsersModel getById(int id) {
         try {
             Session newSession = sessionFactory.openSession();
             Query query = newSession.createQuery("from UsersModel where id = :id");
@@ -157,26 +137,6 @@ public class UsersDao implements Crudable<UsersModel> {
         }
     }
 
-    @Override
-    public UsersModel findById(int id){
-        try {
-            Session newSession = sessionFactory.openSession();
-            Query query = newSession.createQuery("from UsersModel where id = :id");
-            query.setParameter("id" , id);
-            List<UsersModel> data = query.getResultList();
-
-            if(data.size() == 0) {
-                return null;
-            }
-
-            return data.get(0);
-
-        } catch (HibernateException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public boolean checkEmail(String email){
         try{
             Session userSession = sessionFactory.openSession();
@@ -187,7 +147,9 @@ public class UsersDao implements Crudable<UsersModel> {
             UsersModel user = (UsersModel) query.uniqueResult();
             transaction.commit();
             if(user == null) return true;
-            return false;
+
+            return user.getEmail().equals(email);
+
         } catch (HibernateException e){
             e.printStackTrace();
             return false;

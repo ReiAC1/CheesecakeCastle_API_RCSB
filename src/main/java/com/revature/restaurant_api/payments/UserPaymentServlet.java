@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.UsersService;
-import com.revature.restaurant_api.users.response.UsersResponse;
 import com.revature.restaurant_api.util.TokenHandler;
-import com.revature.restaurant_api.util.TokenHeader;
 import com.revature.restaurant_api.util.dto.PaymentDTO;
 
 import javax.servlet.ServletException;
@@ -91,6 +89,11 @@ public class UserPaymentServlet extends HttpServlet {
                 int userId = Integer.parseInt(req.getParameter("id"));
                 List<UserPaymentModel> payments = userPaymentService.getAllByUserID(userId);
                 List<PaymentDTO> payloadDTOs = new ArrayList<>();
+
+                if (payments == null || payments.size() == 0) {
+                    resp.getWriter().println(objectMapper.writeValueAsString(payloadDTOs));
+                    return;
+                }
 
                 for (UserPaymentModel payment : payments) {
                     PaymentDTO dto = new PaymentDTO();

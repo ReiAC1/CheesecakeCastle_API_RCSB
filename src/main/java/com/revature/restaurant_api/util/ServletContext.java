@@ -10,6 +10,7 @@ import com.revature.restaurant_api.payments.UserPaymentServlet;
 import com.revature.restaurant_api.users.UsersDao;
 import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.UsersService;
+import com.revature.restaurant_api.users.UsersServlet;
 import com.revature.restaurant_api.util.web.AuthServlet;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
@@ -59,7 +60,7 @@ public class ServletContext {
             // Create our Daos and Services for Dependency Injection
             MenuItemDao menuItemDao = new MenuItemDao(sessionFactory);
             UsersDao usersDao = new UsersDao(sessionFactory);
-            UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
+            UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory, usersDao);
 
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -72,6 +73,9 @@ public class ServletContext {
 
             tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, usersService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
+
+            tomcat.addServlet("", "UsersServlet", new UsersServlet(usersService, objectMapper));
+            standardContext.addServletMappingDecoded("/users", "UsersServlet");
 
             tomcat.addServlet("", "AuthServlet", new AuthServlet(usersService, objectMapper));
             standardContext.addServletMappingDecoded("/auth", "AuthServlet");

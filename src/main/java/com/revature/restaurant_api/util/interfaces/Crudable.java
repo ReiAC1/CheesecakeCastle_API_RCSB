@@ -10,15 +10,7 @@ public interface Crudable<T> {
     boolean update(T updatedObject);
     boolean delete(T deletedObject);
 
-    boolean delete(String deletedUser);
-
     List<T> getAll();
 
-    List<UsersModel> findAll();
-
     T getByID(int id);
-
-    UsersModel getById(int id);
-
-    UsersModel findById(int id);
 }

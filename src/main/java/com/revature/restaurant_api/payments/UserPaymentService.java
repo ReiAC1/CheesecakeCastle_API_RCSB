@@ -60,7 +60,6 @@ public class UserPaymentService {
         return userPaymentDao.getAllByUserID(userId);
     }
 
-
     public UserPaymentModel getByToken(String token) {
         // validate token
         if (token == null || token.isEmpty())
