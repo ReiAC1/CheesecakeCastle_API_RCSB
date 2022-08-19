@@ -146,6 +146,7 @@ public class UsersDao implements Crudable<UsersModel> {
 
             UsersModel user = (UsersModel) query.uniqueResult();
             transaction.commit();
+            userSession.close();
             if(user == null) return true;
 
             return user.getEmail().equals(email);
@@ -153,8 +154,6 @@ public class UsersDao implements Crudable<UsersModel> {
         } catch (HibernateException e){
             e.printStackTrace();
             return false;
-        } finally{
-            sessionFactory.close();
         }
     }
 }

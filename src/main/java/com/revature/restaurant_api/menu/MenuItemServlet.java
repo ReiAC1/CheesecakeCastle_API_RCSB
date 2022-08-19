@@ -1,5 +1,8 @@
 package com.revature.restaurant_api.menu;
 
+import com.revature.restaurant_api.users.UsersModel;
+import com.revature.restaurant_api.util.TokenHandler;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -7,12 +10,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/menuitem")
 public class MenuItemServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
+        String loginToken = (String) req.getSession().getAttribute("authMember");
+        if(loginToken == null){
+            resp.setStatus(401);
+            return;
+        }
 
+        UsersModel usersModel = TokenHandler.getInstance().getAuthUser(loginToken);
+        if(usersModel == null){
+            resp.setStatus(401);
+        }
+
+        String auth = (String)req.getParameter("auth");
 
         resp.getWriter().write("<h1>Welcome to the wonderful world of servlets!!! yayyyyyy</h1>");
     }

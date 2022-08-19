@@ -1,11 +1,16 @@
 package com.revature.restaurant_api.menu;
 
+import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.util.interfaces.Crudable;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.awt.*;
 import java.util.List;
 
 public class MenuItemDao implements Crudable<MenuItem> {
@@ -85,6 +90,42 @@ public class MenuItemDao implements Crudable<MenuItem> {
 
     @Override
     public MenuItem getByID(int id) {
-        return null;
+        try {
+            Session newSession = sessionFactory.openSession();
+            Query query = newSession.createQuery("from MenuItem where id = :id");
+            query.setParameter("id" , id);
+            List<MenuItem> data = query.getResultList();
+
+            if(data.size() == 0) {
+                return null;
+            }
+
+            return data.get(0);
+
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    //what should we do instead of dishname since it can be misspelled?
+    //maybe cast to a
+    public boolean duplicateCheck(String dishName){
+        try{
+            Session itemSession = sessionFactory.openSession();
+            Transaction transaction = itemSession.beginTransaction();
+            Query query = itemSession.createQuery("from MenuItem where dish_name= :dishName");
+            query.setParameter("dish_name", dishName);
+            MenuItem toCheck = (MenuItem) query.uniqueResult();
+            transaction.commit();
+            itemSession.close();
+
+            if(dishName == null) return true;
+
+            return toCheck.getDishName().equals(dishName);
+
+        }catch(HibernateException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }

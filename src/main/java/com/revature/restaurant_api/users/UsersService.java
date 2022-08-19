@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class UsersService {
-    private final UsersDao  usersDao;
+    private final UsersDao usersDao;
     private UsersModel  sessionUser;
 
     //our service is to handle user requests
@@ -48,14 +48,17 @@ public class UsersService {
             updateReqUser.setFirstName(editUsersRequest.getFirstName());
         }
         if (notNullOrEmpty.test(editUsersRequest.getLastName())){
-            updateReqUser.setLastName(editUsersRequest.getFirstName());
+            updateReqUser.setLastName(editUsersRequest.getLastName());
+        }
+        if (notNullOrEmpty.test(editUsersRequest.getPassword())){
+            updateReqUser.setPassword(editUsersRequest.getPassword());
         }
 
         if (notNullOrEmpty.test(editUsersRequest.getEmail())){
             if(!isEmailAvailable(editUsersRequest.getEmail())){
                 throw new ResourcePersistanceException("Email already in use. Please sign in with that or try again.");
             }
-            updateReqUser.setEmail(updateReqUser.getEmail());
+            updateReqUser.setEmail(editUsersRequest.getEmail());
         }
         return usersDao.update(updateReqUser);
     }
@@ -76,6 +79,7 @@ public class UsersService {
         newUser.setEmail(newUserRegistration.getEmail());
         newUser.setPassword(newUserRegistration.getPassword());
         newUser.setRegistrationDate(new Date(System.currentTimeMillis()));
+        newUser.setAdmin(false);
 
         //logger goes here for registration confirmation
         if(!isUserValid(newUser)){

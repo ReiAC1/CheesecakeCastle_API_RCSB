@@ -2,6 +2,7 @@ package com.revature.restaurant_api.util.interfaces;
 
 
 import com.revature.restaurant_api.users.UsersModel;
+import com.revature.restaurant_api.util.TokenHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,24 +13,37 @@ public interface Authable {
 
     // default allows for implementation at the interface
     default boolean checkAuth(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HttpSession httpSession = req.getSession();
-        if(httpSession.getAttribute("authUsers") == null){
-            resp.getWriter().write("Unauthorized request - not logged in as a registered member");
+        // the login token should be stored in our session
+        String loginToken = (String)req.getSession().getAttribute("authMember");
+
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
             resp.setStatus(401);
             return false;
         }
-        return true;
+
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
+        return uModel != null;
     }
 
     // here's another version if you had a hypothetical admin user
     default boolean checkAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HttpSession httpSession = req.getSession();
-        UsersModel user = (UsersModel) httpSession.getAttribute("authUsers");
-        if(user.getFirstName() == null){
-            resp.getWriter().write("Unauthorized request - not logged in as an admin");
+        String loginToken = (String)req.getSession().getAttribute("authMember");
+
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
             resp.setStatus(401);
             return false;
         }
-        return true;
+
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
+
+        if (uModel == null) {
+            resp.setStatus(401);
+            return false;
+        }
+        return uModel.getAdmin();
     }
 }
