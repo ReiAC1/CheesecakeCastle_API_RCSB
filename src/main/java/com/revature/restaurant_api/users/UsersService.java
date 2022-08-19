@@ -85,7 +85,7 @@ public class UsersService {
 
         // TODO: fillout proper response
 
-        return null;
+        return new UsersResponse(newUser);
     }
 
     public UsersModel login(String email, String password){
