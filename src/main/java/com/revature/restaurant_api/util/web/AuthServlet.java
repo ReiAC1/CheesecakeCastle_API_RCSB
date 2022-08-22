@@ -29,6 +29,12 @@ public class AuthServlet extends HttpServlet {
 
         UsersModel member = usersService.login(loginCreds.getEmail(), loginCreds.getPassword());
 
+        if (member == null) {
+            resp.setStatus(403);
+            resp.getWriter().println("Invalid login");
+            return;
+        }
+
         String payload = objectMapper.writeValueAsString(member);
 
         HttpSession httpSession = req.getSession(true);
