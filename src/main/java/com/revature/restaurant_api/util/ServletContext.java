@@ -73,7 +73,7 @@ public class ServletContext {
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
             UsersService usersService = new UsersService(usersDao);
-            OrderService orderService = new OrderService(ordersDao);
+            OrderService orderService = new OrderService(ordersDao, userPaymentService);
 
             TokenHandler.setupInstance(objectMapper, usersService);
 
@@ -83,7 +83,8 @@ public class ServletContext {
             tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, usersService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
 
-            tomcat.addServlet("", "OrdersServlet", new OrdersServlet(orderService, objectMapper));
+            tomcat.addServlet("", "OrdersServlet", new OrdersServlet(orderService,
+                    usersService, userPaymentService, objectMapper));
             standardContext.addServletMappingDecoded("/orders", "OrdersServlet");
 
             tomcat.addServlet("", "AuthServlet", new AuthServlet(usersService, objectMapper));

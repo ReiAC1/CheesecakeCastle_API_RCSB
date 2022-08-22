@@ -2,11 +2,11 @@ package com.revature.restaurant_api.orders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.restaurant_api.payments.UserPaymentModel;
+import com.revature.restaurant_api.payments.UserPaymentService;
 import com.revature.restaurant_api.users.UsersModel;
+import com.revature.restaurant_api.users.UsersService;
 import com.revature.restaurant_api.util.TokenHandler;
 import com.revature.restaurant_api.util.dto.OrderDTO;
-import com.revature.restaurant_api.util.dto.PaymentDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,11 +19,15 @@ import java.util.List;
 public class OrdersServlet  extends HttpServlet {
 
     private OrderService orderService;
+    private UsersService usersService;
+    private UserPaymentService userPaymentService;
     private ObjectMapper objectMapper;
 
-    public OrdersServlet (OrderService orderService, ObjectMapper objectMapper) {
+    public OrdersServlet (OrderService orderService, UsersService usersService, UserPaymentService userPaymentService, ObjectMapper objectMapper) {
         this.orderService = orderService;
         this.objectMapper = objectMapper;
+        this.usersService = usersService;
+        this.userPaymentService = userPaymentService;
     }
 
     @Override
@@ -112,26 +116,127 @@ public class OrdersServlet  extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("<h1>Welcome to the wonderful world of servlets, in doPost!!! yayyyyyy</h1>");
-    }
+        // the login token should be stored in our session
+        String loginToken = (String)req.getSession().getAttribute("authMember");
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
+            resp.getWriter().println("Unauthorized user");
+            resp.setStatus(401);
+            return;
+        }
+
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
+
+        // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
+        if (uModel == null) {
+            resp.getWriter().println("Unauthorized user");
+            resp.setStatus(401);
+            return;
+        }
+
+        // Retrieve the PaymentDTO
+        // in this case, payment ID will be ignored since we are creating a value
+        OrderDTO orderDTO = objectMapper.readValue(req.getInputStream(), OrderDTO.class);
+
+        // ensure we only create orders for ourselves or if they're an admin
+        if (orderDTO.getId() != uModel.getId() && !uModel.getAdmin()) {
+            resp.getWriter().println("Invalid user account");
+            resp.setStatus(401);
+            return;
+        }
+
+        if (userPaymentService.getByID(orderDTO.getPaymentId()).getUserModel().getId() != uModel.getId()) {
+            resp.getWriter().println("Invalid payment method");
+            resp.setStatus(401);
+            return;
+        }
+
+        try {
+            OrderModel orderModel = orderService.create(orderDTO.getAmount(), orderDTO.getAddress(),
+                    orderDTO.getZip(), usersService.getByID(orderDTO.getUserId()),
+                    userPaymentService.getByID(orderDTO.getPaymentId()));
+
+            if (orderModel == null) {
+                resp.getWriter().println("Payment declined");
+                resp.setStatus(402);
+                return;
+            }
+
+            OrderDTO dto = new OrderDTO(orderModel);
+
+            String payload = objectMapper.writeValueAsString(dto);
+            resp.setStatus(201);
+            resp.getWriter().println(payload);
+
+        } catch (Exception e) {
+            e.printStackTrace(resp.getWriter());
+            resp.setStatus(500);
+        }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
-    }
+        // the login token should be stored in our session
+        String loginToken = (String)req.getSession().getAttribute("authMember");
 
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
-    }
+        // if no login session is found, give an unauthorized status
+        if (loginToken == null) {
+            resp.getWriter().println("Unauthorized user");
+            resp.setStatus(401);
+            return;
+        }
 
-    @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doHead(req, resp);
+        // try to get the UsersModel associated with the header
+        UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
+
+        // if we have no UsersModel, or the TokenHandler cannot validate token, give unauthorized error
+        if (uModel == null) {
+            resp.getWriter().println("Unauthorized user");
+            resp.setStatus(401);
+            return;
+        }
+
+        try {
+            // Retrieve the PaymentDTO
+            // in this case, payment ID will be ignored since we are creating a value
+            OrderDTO orderDTO = objectMapper.readValue(req.getInputStream(), OrderDTO.class);
+
+            // ensure we only create orders for ourselves or if they're an admin
+            if (orderDTO.getId() != uModel.getId() && !uModel.getAdmin()) {
+                resp.getWriter().println("Invalid user account");
+                resp.setStatus(401);
+                return;
+            }
+
+            OrderModel model = orderService.getByID(orderDTO.getId());
+
+            if (orderDTO.getAddress() != null) {
+                model.setAddress(orderDTO.getAddress());
+            }
+
+            if (orderDTO.getZip() != null) {
+                model.setZip(orderDTO.getZip());
+            }
+
+            if (orderDTO.getPaymentId() > 0) {
+                model.setPayment(userPaymentService.getByID(orderDTO.getPaymentId()));
+            }
+
+            if (model.getUser().getId() != model.getPayment().getUserModel().getId()) {
+                resp.getWriter().println("Invalid payment method");
+                resp.setStatus(401);
+                return;
+            }
+
+            String payload = objectMapper.writeValueAsString(orderService.update(model));
+
+            resp.setStatus(200);
+            resp.getWriter().println(payload);
+        } catch (Exception e) {
+            e.printStackTrace(resp.getWriter());
+            resp.setStatus(500);
+        }
     }
 }
