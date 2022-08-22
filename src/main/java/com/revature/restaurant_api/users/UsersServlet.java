@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-
 public class UsersServlet extends HttpServlet implements Authable {
 
     private final UsersService usersService;
@@ -85,10 +84,10 @@ public class UsersServlet extends HttpServlet implements Authable {
     protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         EditUsersRequest editUser = objectMapper.readValue(req.getInputStream(), EditUsersRequest.class);
         if (!checkAuth(req,res)) return;
-        String id = req.getParameter("id");
-        String email = req.getParameter("email");
-        if (id != null){
-            usersService.remove(Integer.parseInt(id));
+        int id = editUser.getId();
+        String email = editUser.getEmail();
+        if (id > 0){
+            usersService.remove(id);
             res.getWriter().write("User: " + id + "\n email: " + email + "has been deleted");
         }else {
             res.getWriter().write("Request requires valid email entry");
@@ -100,7 +99,7 @@ public class UsersServlet extends HttpServlet implements Authable {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         EditUsersRequest editUsersRequest = objectMapper.readValue(req.getInputStream(), EditUsersRequest.class);
-
+        if (!checkAuth(req,res)) return;
         try{
             usersService.update(editUsersRequest);
             res.getWriter().write("User has successfully updated");
@@ -112,14 +111,5 @@ public class UsersServlet extends HttpServlet implements Authable {
             res.setStatus(500);
         }
     }
-//not sure if we need methods below
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
-    }
 
-    @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doHead(req, resp);
-    }
 }

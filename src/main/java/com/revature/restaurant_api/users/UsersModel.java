@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users_accts")
 public class UsersModel {
     @Id
     @Column(name = "id", nullable = false)
@@ -18,7 +18,8 @@ public class UsersModel {
     private String email;
     private Date registrationDate;
     private String password;
-    private boolean isAdmin = false;
+    @Column(name="isadmin")
+    private boolean admin = false;
 
     public int getId() {
         return id;
@@ -68,17 +69,17 @@ public class UsersModel {
         this.password = password;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public boolean getAdmin() {
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public String toString() {
         return String.format("ID: %d, firstName: %s, lastName: %s, email: %s, password: %s, isAdmin: %b",
-                id, firstName, lastName, email, password, isAdmin);
+                id, firstName, lastName, email, password, admin);
     }
 
 }

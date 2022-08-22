@@ -37,9 +37,10 @@ public class ServletContext {
         Configuration conf = new Configuration().configure("cfg.xml");
 
         // add our annotated classes (aka the classes that should be persisted in our database)
+        conf.addAnnotatedClass(UsersModel.class);
         conf.addAnnotatedClass(MenuItem.class);
         conf.addAnnotatedClass(UserPaymentModel.class);
-        conf.addAnnotatedClass(UsersModel.class);
+
 
         // and finally build the session factory
         sessionFactory = conf.buildSessionFactory();
