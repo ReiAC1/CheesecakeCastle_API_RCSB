@@ -107,8 +107,6 @@ public class UsersService {
         //charles suggested we implement the predicate
         //creating mvp first
 
-        System.out.println(newUser);
-
         if(newUser == null) return false; //check to see if they have entered empty set
         if(newUser.getFirstName() == null || newUser.getFirstName().trim().equals("")) return false;
         if(newUser.getLastName() == null || newUser.getLastName().trim().equals("")) return false;

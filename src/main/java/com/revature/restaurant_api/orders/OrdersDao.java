@@ -1,5 +1,6 @@
 package com.revature.restaurant_api.orders;
 
+import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.util.interfaces.Crudable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,6 +8,7 @@ import org.hibernate.SessionFactory;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import java.util.List;
 
 public class OrdersDao implements Crudable<OrderModel> {
@@ -124,5 +126,26 @@ public class OrdersDao implements Crudable<OrderModel> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<OrderModel> getAllByUserID(int userId) {
+        // Create our session
+        Session s = sessionFactory.openSession();
+
+        // Using a query, we can select a java class from the database
+        Query query = s.createQuery("FROM OrderModel WHERE customer_id = :id");
+        // ensure we use parameters to avoid potential sql injection
+        query.setParameter("id", userId);
+
+        // get our list of results
+        List<OrderModel> results = query.getResultList();
+
+        s.close();
+
+        // ensure that we have results, if not return null
+        if (results.size() == 0)
+            return null;
+
+        return results;
     }
 }

@@ -3,6 +3,7 @@ package com.revature.restaurant_api.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
+import com.revature.restaurant_api.orders.OrderModel;
 import com.revature.restaurant_api.orders.OrderService;
 import com.revature.restaurant_api.orders.OrdersDao;
 import com.revature.restaurant_api.orders.OrdersServlet;
@@ -40,6 +41,7 @@ public class ServletContext {
         conf.addAnnotatedClass(UsersModel.class);
         conf.addAnnotatedClass(MenuItem.class);
         conf.addAnnotatedClass(UserPaymentModel.class);
+        conf.addAnnotatedClass(OrderModel.class);
 
 
         // and finally build the session factory
