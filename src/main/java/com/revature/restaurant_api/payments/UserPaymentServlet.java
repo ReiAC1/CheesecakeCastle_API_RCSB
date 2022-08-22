@@ -90,6 +90,8 @@ public class UserPaymentServlet extends HttpServlet {
                 List<UserPaymentModel> payments = userPaymentService.getAllByUserID(userId);
                 List<PaymentDTO> payloadDTOs = new ArrayList<>();
 
+                resp.setStatus(200);
+
                 if (payments == null || payments.size() == 0) {
                     resp.getWriter().println(objectMapper.writeValueAsString(payloadDTOs));
                     return;
@@ -157,6 +159,7 @@ public class UserPaymentServlet extends HttpServlet {
             dto.setExp_date(paymentModel.getExp_date());
 
             String payload = objectMapper.writeValueAsString(dto);
+            resp.setStatus(201);
             resp.getWriter().println(payload);
 
         } catch (Exception e) {
@@ -198,6 +201,7 @@ public class UserPaymentServlet extends HttpServlet {
             boolean success = userPaymentService.delete(pModel);
 
             String payload = objectMapper.writeValueAsString(success);
+            resp.setStatus(200);
             resp.getWriter().println(payload);
 
         } catch (Exception e) {
@@ -241,6 +245,7 @@ public class UserPaymentServlet extends HttpServlet {
             boolean success = userPaymentService.update(pModel);
 
             String payload = objectMapper.writeValueAsString(success);
+            resp.setStatus(200);
             resp.getWriter().println(payload);
 
         } catch (Exception e) {

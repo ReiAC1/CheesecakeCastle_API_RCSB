@@ -1,7 +1,5 @@
 package com.revature.restaurant_api.payments;
 
-import com.revature.restaurant_api.users.UsersDao;
-import com.revature.restaurant_api.users.UsersService;
 import com.revature.restaurant_api.util.interfaces.Crudable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,20 +12,15 @@ import java.util.List;
 public class UserPaymentDao implements Crudable<UserPaymentModel> {
 
     private SessionFactory sessionFactory;
-    private UsersDao usersDao;
 
-    public UserPaymentDao(SessionFactory sessionFactory, UsersDao usersDao) {
+    public UserPaymentDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.usersDao = usersDao;
     }
 
     // Creates a new row for our UserPaymentModel table
     @Override
     public UserPaymentModel create(UserPaymentModel newObject) {
         try {
-            System.out.println(newObject.getUserModel());
-            usersDao.update(newObject.getUserModel());
-
             Session s = sessionFactory.openSession();
 
             // begin transaction, save, and commit changes

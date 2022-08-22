@@ -3,6 +3,9 @@ package com.revature.restaurant_api.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
+import com.revature.restaurant_api.orders.OrderService;
+import com.revature.restaurant_api.orders.OrdersDao;
+import com.revature.restaurant_api.orders.OrdersServlet;
 import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
@@ -60,22 +63,25 @@ public class ServletContext {
             // Create our Daos and Services for Dependency Injection
             MenuItemDao menuItemDao = new MenuItemDao(sessionFactory);
             UsersDao usersDao = new UsersDao(sessionFactory);
-            UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory, usersDao);
+            UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
+            OrdersDao ordersDao = new OrdersDao(sessionFactory);
 
             ObjectMapper objectMapper = new ObjectMapper();
 
-            UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao, objectMapper);
+            UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
             UsersService usersService = new UsersService(usersDao);
+            OrderService orderService = new OrderService(ordersDao);
 
             TokenHandler.setupInstance(objectMapper, usersService);
 
-            //duserPaymentService.create(100, new Date(124, 8, 1), "032", "32792", "Test", 0);
+            tomcat.addServlet("", "UsersServlet", new UsersServlet(usersService, objectMapper));
+            standardContext.addServletMappingDecoded("/users", "UsersServlet");
 
             tomcat.addServlet("", "UserPaymentServlet", new UserPaymentServlet(userPaymentService, usersService, objectMapper));
             standardContext.addServletMappingDecoded("/payments", "UserPaymentServlet");
 
-            tomcat.addServlet("", "UsersServlet", new UsersServlet(usersService, objectMapper));
-            standardContext.addServletMappingDecoded("/users", "UsersServlet");
+            tomcat.addServlet("", "OrdersServlet", new OrdersServlet(orderService, objectMapper));
+            standardContext.addServletMappingDecoded("/orders", "OrdersServlet");
 
             tomcat.addServlet("", "AuthServlet", new AuthServlet(usersService, objectMapper));
             standardContext.addServletMappingDecoded("/auth", "AuthServlet");
