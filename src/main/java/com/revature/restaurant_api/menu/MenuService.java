@@ -55,8 +55,8 @@ public class MenuService {
         if (notNullOrEmpty.test(menuItemRequest.getDescription())){
             menuItem.setDescription(menuItemRequest.getDescription());
         }
-        if (notNullOrEmpty.test(String.valueOf(menuItemRequest.isVegetarian()))){
-            menuItem.setVegetarian(menuItemRequest.isVegetarian());
+        if (notNullOrEmpty.test(String.valueOf(menuItemRequest.getVegetarian()))){
+            menuItem.setVegetarian(menuItemRequest.getVegetarian());
         }
 
         if (notNullOrEmpty.test(String.valueOf(menuItemRequest.getDishId()))){

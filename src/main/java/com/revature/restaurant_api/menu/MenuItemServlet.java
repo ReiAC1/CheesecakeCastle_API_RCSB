@@ -3,6 +3,7 @@ package com.revature.restaurant_api.menu;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.users.requests.EditMenuItemRequest;
+import com.revature.restaurant_api.users.requests.EditUsersRequest;
 import com.revature.restaurant_api.users.requests.NewMenuItemRequest;
 import com.revature.restaurant_api.users.response.MenuItemResponse;
 import com.revature.restaurant_api.util.TokenHandler;
@@ -20,7 +21,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 
-public class MenuItemServlet extends HttpServlet {
+public class MenuItemServlet extends HttpServlet implements Authable {
 
     private final MenuService menuService;
     private final ObjectMapper objectMapper;
@@ -34,52 +35,53 @@ public class MenuItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
         String id = req.getParameter("id");
         String loginToken = (String) req.getSession().getAttribute("authMember");
-        if(loginToken == null){
+        if (loginToken == null) {
             resp.setStatus(401);
             return;
         }
 
         UsersModel usersModel = TokenHandler.getInstance().getAuthUser(loginToken);
-        if(usersModel == null){
+        if (usersModel == null) {
             resp.setStatus(401);
         }
 
-        if (id != null){
+        if (id != null) {
             //logger implementation
-            try{
+            try {
                 MenuItemResponse menuitem = menuService.findById(Integer.valueOf(id));
                 String payloadId = objectMapper.writeValueAsString(menuitem);
                 resp.getWriter().write(payloadId);
-            } catch (InvalidUserInputException e){
+            } catch (InvalidUserInputException e) {
                 //logger
                 resp.getWriter().write("Id entered is not a valid menu item. Please Try again.");
                 resp.setStatus(404);
             }
-        }else{
+        } else {
             List<MenuItemResponse> menuItem = menuService.readAll();
             String payload = objectMapper.writeValueAsString(menuItem);
             resp.getWriter().write(payload);
         }
-        String auth = (String)req.getParameter("auth");
-
-        resp.getWriter().write("<h1>Welcome to the Menu Servlet</h1>");
+        String auth = (String) req.getParameter("auth");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter respWriter = resp.getWriter();
         NewMenuItemRequest menuItemRequest = objectMapper.readValue(req.getInputStream(), NewMenuItemRequest.class);
-
-        try{
+        if (!checkAdmin(req, resp)) {
+            resp.setStatus(403);
+            return;
+        }
+        try {
             //logger recom
             MenuItemResponse newMenuItem = menuService.createMenuItem(menuItemRequest);
             String payload = objectMapper.writeValueAsString(newMenuItem);
             respWriter.write(payload);
             resp.setStatus(201);
-        }catch(InvalidUserInputException | ResourcePersistanceException e){
+        } catch (InvalidUserInputException | ResourcePersistanceException e) {
             respWriter.write(e.getMessage());
             resp.setStatus(404);
-        }catch(Exception e){
+        } catch (Exception e) {
             respWriter.write(e.getMessage() + " " + e.getClass().getName());
             resp.setStatus(500); //catch all exception for any missed condition checks or unexpected behavior
         }
@@ -88,13 +90,17 @@ public class MenuItemServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         EditMenuItemRequest editMenuItemRequest = objectMapper.readValue(req.getInputStream(), EditMenuItemRequest.class);
-        try{
+        if (!checkAdmin(req, resp)) {
+            resp.setStatus(403);
+            return;
+        }
+        try {
             menuService.update(editMenuItemRequest);
             resp.getWriter().write("Menu Item Succesfully Updated");
-        } catch (InvalidUserInputException e){
+        } catch (InvalidUserInputException e) {
             resp.getWriter().write(e.getMessage());
             resp.setStatus(404);
-        } catch (Exception e){
+        } catch (Exception e) {
             resp.getWriter().write(e.getMessage() + " " + e.getClass().getName());
             resp.setStatus(500);
         }
@@ -102,22 +108,24 @@ public class MenuItemServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        //this needs to be refactored
-        //    if(!checkAuth(logintoken)) return;
-        //do put requires an authorization check
-        //good position to establish administrator check for updating and changin menu items?
-        //unsure how to implement token verification for this from authable
-
-        String id = req.getParameter("id");
-        String email = req.getParameter("email");
-        if(id != null){
-            menuService.remove(Integer.valueOf(id));
-            resp.getWriter().write("Member with " + id + " has been deleted");
-            resp.getWriter().write("Email is " + email);
-        } else {
-            resp.getWriter().write("This request requires an email parameter in the path ?email=example@mail.com");
+        EditMenuItemRequest editMenuItemRequest = objectMapper.readValue(req.getInputStream(), EditMenuItemRequest.class);
+        if (!checkAdmin(req, resp)) {
+            resp.setStatus(403);
+            return;
+        }
+        if (editMenuItemRequest == null) {
             resp.setStatus(400);
-        }    }
-
+            return;
+        }
+        //object
+        int id = editMenuItemRequest.getDishId();
+        if (id > 0) {
+            menuService.remove(id);
+            resp.getWriter().write("True");
+            //
+        } else {
+            resp.getWriter().write("id < 0");
+            resp.setStatus(400);
+        }
+    }
 }
