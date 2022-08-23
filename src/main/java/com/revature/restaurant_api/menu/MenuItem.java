@@ -60,6 +60,8 @@ public class MenuItem {
         isVegetarian = vegetarian;
     }
 
+
+
     //looks like he does not have this in mvp coumns
     /*
     public MenuCategory getCategory() {

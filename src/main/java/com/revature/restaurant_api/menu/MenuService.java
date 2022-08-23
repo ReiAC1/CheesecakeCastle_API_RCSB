@@ -39,6 +39,12 @@ public class MenuService {
 
     }
 
+    public MenuItemResponse findById(int id){
+        MenuItem menuItem = menuItemDao.getByID(id);
+        MenuItemResponse itemResponse = new MenuItemResponse(menuItem);
+        return new MenuItemResponse();
+    }
+
     public boolean update (EditMenuItemRequest menuItemRequest) throws InvalidUserInputException{
         MenuItem menuItem = menuItemDao.getByID(menuItemRequest.getDishId());
 
@@ -67,7 +73,7 @@ public class MenuService {
     }
 
     public boolean isMenuItemValid(MenuItem newItem){
-        System.out.println(newItem);
+        System.out.println("Validation check for existing menu item: " + newItem);
 
         if(newItem ==null) return false;
         if(newItem.getDishName() == null || newItem.getDishName().trim().equals("")) return false;
@@ -92,7 +98,6 @@ public class MenuService {
         }
         return false;
     }
-
 
 
 }
