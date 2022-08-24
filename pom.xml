@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.revature</groupId>
-    <artifactId>RestaurantAPI</artifactId>
+    <artifactId>nabnak</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -62,6 +62,14 @@
             <artifactId>tomcat-jsp-api</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -74,54 +82,60 @@
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.6.10.Final</version>
         </dependency>
-
     </dependencies>
 
-    <build>
-        <finalName>embeddedTomcatSample</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>2.0.0</version>
-                <configuration>
-                    <assembleDirectory>target</assembleDirectory>
-                    <programs>
-                        <program>
-                            <mainClass>launch.Main</mainClass>
-                            <name>webapp</name>
-                        </program>
-                    </programs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.revature.restaurant_api.MainDriver</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+<build>
+    <finalName>embeddedTomcatSample</finalName>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>appassembler-maven-plugin</artifactId>
+            <version>2.0.0</version>
+            <configuration>
+                <assembleDirectory>target</assembleDirectory>
+                <programs>
+                    <program>
+                        <mainClass>launch.Main</mainClass>
+                        <name>webapp</name>
+                    </program>
+                </programs>
 
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>assemble</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <mainClass>com.revature.nabnak.MainDriver</mainClass>
+                    </manifest>
+                </archive>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+    
 </project>
