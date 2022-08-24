@@ -1,21 +1,29 @@
 package com.revature.restaurant_api.orders;
 
+import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
+import com.revature.restaurant_api.orderdetails.OrderDetailsService;
 import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
 import com.revature.restaurant_api.users.UsersModel;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService {
 
     private OrdersDao ordersDao;
     private UserPaymentService paymentService;
+    private OrderDetailsService orderDetailsService;
 
     public OrderService(OrdersDao ordersDao, UserPaymentService paymentService) {
         this.ordersDao = ordersDao;
         this.paymentService = paymentService;
+    }
+
+    public void setOrderDetailsService(OrderDetailsService orderDetailsService) {
+        this.orderDetailsService = orderDetailsService;
     }
 
     public OrderModel create(double amount, String address, String zip, UsersModel user, UserPaymentModel payment) {
@@ -29,13 +37,6 @@ public class OrderService {
 
         model.setDate(new Date(System.currentTimeMillis()));
 
-        if (!validateOrder(model))
-            return null;
-
-        payment.setBalance(payment.getBalance() - model.getAmount());
-
-        paymentService.update(payment);
-
         model = ordersDao.create(model);
 
         return model;
@@ -44,6 +45,21 @@ public class OrderService {
     public boolean update(OrderModel model) {
         if (!validateOrder(model))
             return false;
+
+        double newValue = 0;
+        double difference = model.getAmount();
+
+        List<OrderDetailsModel> orderDetailsModelList = orderDetailsService.getAllByOrderID(model.getId());
+
+        for (OrderDetailsModel om : orderDetailsModelList) {
+            newValue += om.getItem().getCost() * om.getQuantity();
+        }
+
+        difference -= newValue;
+
+        model.getPayment().setBalance(model.getPayment().getBalance() - difference);
+
+        paymentService.update(model.getPayment());
 
         return ordersDao.update(model);
     }
@@ -61,7 +77,7 @@ public class OrderService {
     }
 
     private boolean validateOrder(OrderModel model) {
-        if (model.getAmount() <= 0 || model.getAmount() > model.getPayment().getBalance()) return false;
+        if (model.getAmount() < 0 || model.getAmount() > model.getPayment().getBalance()) return false;
         if (model.getAddress() == null || model.getAddress().isEmpty()) return false;
         if (model.getZip() == null || model.getZip().isEmpty()) return false;
         if (model.getUser() == null) return false;

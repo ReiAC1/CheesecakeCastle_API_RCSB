@@ -3,6 +3,10 @@ package com.revature.restaurant_api.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
+import com.revature.restaurant_api.menu.MenuService;
+import com.revature.restaurant_api.orderdetails.OrderDetailsDao;
+import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
+import com.revature.restaurant_api.orderdetails.OrderDetailsService;
 import com.revature.restaurant_api.orders.OrderModel;
 import com.revature.restaurant_api.orders.OrderService;
 import com.revature.restaurant_api.orders.OrdersDao;
@@ -27,29 +31,38 @@ import org.hibernate.cfg.Configuration;
 
 import javax.servlet.ServletException;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
 // ServletContext - Sets up Servlets associated with the restaurant web api
 public class ServletContext {
 
     SessionFactory sessionFactory;
 
-    private void setupHibernate() {
-        // Load our config file
-        Configuration conf = new Configuration().configure("cfg.xml");
+    private void setupHibernate() throws IOException {
+        Configuration conf = new Configuration();
+        Properties properties = new Properties();
+
+        // Searching the thread for the file specified and streaming it into the properties.load()
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        properties.load(loader.getResourceAsStream("cfg.properties"));
+        //properties.load(new FileReader("src/main/resources/cfg.properties"));
+
+        conf.addProperties(properties);
 
         // add our annotated classes (aka the classes that should be persisted in our database)
         conf.addAnnotatedClass(UsersModel.class);
         conf.addAnnotatedClass(MenuItem.class);
         conf.addAnnotatedClass(UserPaymentModel.class);
         conf.addAnnotatedClass(OrderModel.class);
-
+        conf.addAnnotatedClass(OrderDetailsModel.class);
 
         // and finally build the session factory
         sessionFactory = conf.buildSessionFactory();
     }
 
     public void run() {
-        setupHibernate();
 
         String webappDirLocation = new File("src/main/webapp/").getAbsolutePath();
         String additonalClasses = new File("target/classes").getAbsolutePath();
@@ -57,6 +70,7 @@ public class ServletContext {
         Tomcat tomcat = new Tomcat();
 
         try {
+            setupHibernate();
             StandardContext standardContext = (StandardContext) tomcat.addWebapp("", webappDirLocation);
             WebResourceRoot resourceRoot = new StandardRoot(standardContext);
             resourceRoot.addPreResources(new DirResourceSet(resourceRoot, "/WEB-INF/classes", additonalClasses, "/")); // everything you need prior to build the application
@@ -68,12 +82,17 @@ public class ServletContext {
             UsersDao usersDao = new UsersDao(sessionFactory);
             UserPaymentDao userPaymentDao = new UserPaymentDao(sessionFactory);
             OrdersDao ordersDao = new OrdersDao(sessionFactory);
+            OrderDetailsDao orderDetailsDao = new OrderDetailsDao(sessionFactory);
 
             ObjectMapper objectMapper = new ObjectMapper();
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
             UsersService usersService = new UsersService(usersDao);
             OrderService orderService = new OrderService(ordersDao, userPaymentService);
+            MenuService menuService = new MenuService(menuItemDao);
+            OrderDetailsService orderDetailsService = new OrderDetailsService(orderDetailsDao, orderService, menuService);
+
+            orderService.setOrderDetailsService(orderDetailsService);
 
             TokenHandler.setupInstance(objectMapper, usersService);
 
@@ -95,7 +114,7 @@ public class ServletContext {
             tomcat.start(); // there is a default port on your computer for testing, 8080 this is a "developers port"
             tomcat.getServer().await();
 
-        } catch (ServletException | LifecycleException e) {
+        } catch (ServletException | IOException | LifecycleException e) {
             throw new RuntimeException(e);
         }
     }

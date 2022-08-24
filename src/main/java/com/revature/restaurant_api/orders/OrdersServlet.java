@@ -141,7 +141,7 @@ public class OrdersServlet  extends HttpServlet {
         OrderDTO orderDTO = objectMapper.readValue(req.getInputStream(), OrderDTO.class);
 
         // ensure we only create orders for ourselves or if they're an admin
-        if (orderDTO.getId() != uModel.getId() && !uModel.getAdmin()) {
+        if (orderDTO.getUserId() != uModel.getId() && !uModel.getAdmin()) {
             resp.getWriter().println("Invalid user account");
             resp.setStatus(401);
             return;
@@ -154,7 +154,7 @@ public class OrdersServlet  extends HttpServlet {
         }
 
         try {
-            OrderModel orderModel = orderService.create(orderDTO.getAmount(), orderDTO.getAddress(),
+            OrderModel orderModel = orderService.create(0, orderDTO.getAddress(),
                     orderDTO.getZip(), usersService.getByID(orderDTO.getUserId()),
                     userPaymentService.getByID(orderDTO.getPaymentId()));
 
@@ -204,7 +204,7 @@ public class OrdersServlet  extends HttpServlet {
             OrderDTO orderDTO = objectMapper.readValue(req.getInputStream(), OrderDTO.class);
 
             // ensure we only create orders for ourselves or if they're an admin
-            if (orderDTO.getId() != uModel.getId() && !uModel.getAdmin()) {
+            if (orderDTO.getUserId() != uModel.getId() && !uModel.getAdmin()) {
                 resp.getWriter().println("Invalid user account");
                 resp.setStatus(401);
                 return;

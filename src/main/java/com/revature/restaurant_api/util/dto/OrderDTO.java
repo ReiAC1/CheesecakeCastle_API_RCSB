@@ -6,7 +6,6 @@ import java.sql.Date;
 
 public class OrderDTO {
     private int id;
-    private double amount;
     private Date date;
     private String address;
     private String zip;
@@ -17,7 +16,6 @@ public class OrderDTO {
 
     public OrderDTO(OrderModel model) {
         id = model.getId();
-        amount = model.getAmount();
         date = model.getDate();
         address = model.getAddress();
         zip = model.getZip();
@@ -31,14 +29,6 @@ public class OrderDTO {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
     }
 
     public Date getDate() {
