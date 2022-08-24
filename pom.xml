@@ -127,7 +127,7 @@
             <configuration>
                 <archive>
                     <manifest>
-                        <mainClass>com.revature.nabnak.MainDriver</mainClass>
+                        <mainClass>com.revature.restaurant_api.MainDriver</mainClass>
                     </manifest>
                 </archive>
                 <descriptorRefs>
