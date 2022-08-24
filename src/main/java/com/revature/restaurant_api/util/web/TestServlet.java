@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/test") // add path to the url endpoint, only need if you're leveraging the DEFAULT CONSTRUCTOR
+//@WebServlet("/test") // add path to the url endpoint, only need if you're leveraging the DEFAULT CONSTRUCTOR
 public class TestServlet extends HttpServlet {
 
     // KNOW THIS METHOD SIGNATURE - love asking about it in QC
