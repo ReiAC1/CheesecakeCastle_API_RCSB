@@ -4,12 +4,9 @@ import com.revature.restaurant_api.users.requests.NewRegistrationRequest;
 import com.revature.restaurant_api.users.response.UsersResponse;
 import com.revature.restaurant_api.util.exceptions.InvalidUserInputException;
 import com.revature.restaurant_api.util.exceptions.ResourcePersistanceException;
-import org.apache.catalina.User;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
