@@ -1,6 +1,5 @@
 .idea/
 target/
-resources/
 out/
 src/main/resources/cfg.xml
 src/main/resources/cfg.properties
