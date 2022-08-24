@@ -65,6 +65,10 @@ public class ServletContext {
 
     public void run() {
 
+        // For Elastic beanstalk deployment
+        new File("src/main/webapp/").mkdirs();
+        new File("target/classes").mkdirs();
+        
         String webappDirLocation = new File("src/main/webapp/").getAbsolutePath();
         String additonalClasses = new File("target/classes").getAbsolutePath();
 
