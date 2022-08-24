@@ -48,7 +48,7 @@ public class MenuItemServlet extends HttpServlet implements Authable {
         if (id != null) {
             //logger implementation
             try {
-                MenuItemResponse menuitem = menuService.findById(Integer.valueOf(id));
+                MenuItemResponse menuitem = new MenuItemResponse(menuService.findById(Integer.valueOf(id)));
                 String payloadId = objectMapper.writeValueAsString(menuitem);
                 resp.getWriter().write(payloadId);
             } catch (InvalidUserInputException e) {

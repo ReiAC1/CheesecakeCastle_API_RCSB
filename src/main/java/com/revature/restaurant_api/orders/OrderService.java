@@ -1,4 +1,4 @@
-package com.revature.restaurant_api.payments.orders;
+package com.revature.restaurant_api.orders;
 
 import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
 import com.revature.restaurant_api.orderdetails.OrderDetailsService;
@@ -53,8 +53,6 @@ public class OrderService {
             newValue += om.getItem().getCost() * om.getQuantity();
         }
         difference = newValue - model.getAmount();
-
-        System.out.println(newValue);
 
         model.setAmount(newValue);
         model.getPayment().setBalance(model.getPayment().getBalance() - difference);

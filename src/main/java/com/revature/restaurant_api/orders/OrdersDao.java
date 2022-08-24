@@ -1,4 +1,4 @@
-package com.revature.restaurant_api.payments.orders;
+package com.revature.restaurant_api.orders;
 
 import com.revature.restaurant_api.util.interfaces.Crudable;
 import org.hibernate.Session;

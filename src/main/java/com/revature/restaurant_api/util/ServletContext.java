@@ -5,6 +5,14 @@ import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
 import com.revature.restaurant_api.menu.MenuItemServlet;
 import com.revature.restaurant_api.menu.MenuService;
+import com.revature.restaurant_api.orderdetails.OrderDetailsDao;
+import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
+import com.revature.restaurant_api.orderdetails.OrderDetailsService;
+import com.revature.restaurant_api.orderdetails.OrderDetailsServlet;
+import com.revature.restaurant_api.orders.OrderModel;
+import com.revature.restaurant_api.orders.OrderService;
+import com.revature.restaurant_api.orders.OrdersDao;
+import com.revature.restaurant_api.orders.OrdersServlet;
 import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
@@ -25,7 +33,6 @@ import org.hibernate.cfg.Configuration;
 
 import javax.servlet.ServletException;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -41,7 +48,6 @@ public class ServletContext {
         // Searching the thread for the file specified and streaming it into the properties.load()
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         properties.load(loader.getResourceAsStream("cfg.properties"));
-        //properties.load(new FileReader("src/main/resources/cfg.properties"));
 
         conf.addProperties(properties);
 
@@ -49,6 +55,8 @@ public class ServletContext {
         conf.addAnnotatedClass(UsersModel.class);
         conf.addAnnotatedClass(MenuItem.class);
         conf.addAnnotatedClass(UserPaymentModel.class);
+        conf.addAnnotatedClass(OrderModel.class);
+        conf.addAnnotatedClass(OrderDetailsModel.class);
 
 
         // and finally build the session factory
@@ -82,6 +90,10 @@ public class ServletContext {
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
             UsersService usersService = new UsersService(usersDao);
             MenuService menuService = new MenuService(menuItemDao);
+            OrderService orderService = new OrderService(ordersDao, userPaymentService);
+            OrderDetailsService orderDetailsService = new OrderDetailsService(orderDetailsDao, orderService, menuService);
+
+            orderService.setOrderDetailsService(orderDetailsService);
 
             TokenHandler.setupInstance(objectMapper, usersService);
 
@@ -94,6 +106,10 @@ public class ServletContext {
             tomcat.addServlet("", "OrdersServlet", new OrdersServlet(orderService,
                     usersService, userPaymentService, objectMapper));
             standardContext.addServletMappingDecoded("/orders", "OrdersServlet");
+
+            tomcat.addServlet("", "OrderDetailsServlet", new OrderDetailsServlet(orderDetailsService,
+                    orderService, objectMapper));
+            standardContext.addServletMappingDecoded("/order_details", "OrderDetailsServlet");
 
             tomcat.addServlet("", "AuthServlet", new AuthServlet(usersService, objectMapper));
             standardContext.addServletMappingDecoded("/auth", "AuthServlet");

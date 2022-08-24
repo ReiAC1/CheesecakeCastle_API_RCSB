@@ -21,13 +21,17 @@ public class OrderDetailsService {
         OrderDetailsModel model = new OrderDetailsModel();
         model.setQuantity(quantity);
         model.setComments(comments);
-        //model.setItem(menuService.);
+        model.setItem(menuService.findById(dishID));
         model.setOrder(orderService.getByID(orderID));
 
         if (!validateOrderDetails(model))
             return null;
 
+        if (model.getOrder().getPayment().getBalance() < quantity * model.getItem().getCost())
+            return null;
+
         model = orderDetailsDao.create(model);
+        orderService.update(model.getOrder());
 
         return model;
     }
@@ -36,7 +40,12 @@ public class OrderDetailsService {
         if (!validateOrderDetails(model))
             return false;
 
-        return orderDetailsDao.update(model);
+        boolean ret = orderDetailsDao.update(model);
+        if (!ret)
+            return false;
+
+        orderService.update(model.getOrder());
+        return true;
     }
 
     public boolean delete(OrderDetailsModel model) {

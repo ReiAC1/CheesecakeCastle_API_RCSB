@@ -1,11 +1,6 @@
 package com.revature.restaurant_api.util.dto;
 
-import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
-import com.revature.restaurant_api.orders.OrderModel;
-
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 public class OrderDetailsDTO {
     private int id;

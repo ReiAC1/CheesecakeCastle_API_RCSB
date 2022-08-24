@@ -6,7 +6,7 @@ import com.revature.restaurant_api.orders.OrderModel;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order_details")
 public class OrderDetailsModel {
     @Id
     @Column(name = "id", nullable = false)

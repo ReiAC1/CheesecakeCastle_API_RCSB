@@ -39,10 +39,8 @@ public class MenuService {
 
     }
 
-    public MenuItemResponse findById(int id){
-        MenuItem menuItem = menuItemDao.getByID(id);
-        MenuItemResponse itemResponse = new MenuItemResponse(menuItem);
-        return new MenuItemResponse();
+    public MenuItem findById(int id){
+        return menuItemDao.getByID(id);
     }
 
     public boolean update (EditMenuItemRequest menuItemRequest) throws InvalidUserInputException{

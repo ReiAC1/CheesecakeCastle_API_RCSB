@@ -6,7 +6,6 @@ import com.revature.restaurant_api.orders.OrderModel;
 import com.revature.restaurant_api.orders.OrderService;
 import com.revature.restaurant_api.users.UsersModel;
 import com.revature.restaurant_api.util.TokenHandler;
-import com.revature.restaurant_api.util.dto.OrderDTO;
 import com.revature.restaurant_api.util.dto.OrderDetailsDTO;
 
 import javax.servlet.ServletException;
@@ -92,6 +91,11 @@ public class OrderDetailsServlet extends HttpServlet {
                 List<OrderDetailsModel> orders = orderDetailsService.getAllByOrderID(userId);
                 ArrayList<OrderDetailsDTO> dtos = new ArrayList<>();
 
+                if (orders == null || orders.size() == 0) {
+                    resp.getWriter().println("[]");
+                    return;
+                }
+
                 for (OrderDetailsModel model : orders) {
                     dtos.add(new OrderDetailsDTO(model));
                 }
@@ -169,6 +173,7 @@ public class OrderDetailsServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace(resp.getWriter());
+            e.printStackTrace();
             resp.setStatus(500);
         }
     }

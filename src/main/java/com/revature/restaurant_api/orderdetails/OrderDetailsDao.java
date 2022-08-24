@@ -1,6 +1,5 @@
 package com.revature.restaurant_api.orderdetails;
 
-import com.revature.restaurant_api.orders.OrderModel;
 import com.revature.restaurant_api.util.interfaces.Crudable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -104,7 +103,7 @@ public class OrderDetailsDao implements Crudable<OrderDetailsModel> {
             Session s = sessionFactory.openSession();
 
             // Using a query, we can select a java class from the database
-            Query query = s.createQuery("FROM OrderModel WHERE id = :id");
+            Query query = s.createQuery("FROM OrderDetailsModel WHERE id = :id");
             // ensure we use parameters to avoid potential sql injection
             query.setParameter("id", id);
 
@@ -131,7 +130,7 @@ public class OrderDetailsDao implements Crudable<OrderDetailsModel> {
         Session s = sessionFactory.openSession();
 
         // Using a query, we can select a java class from the database
-        Query query = s.createQuery("FROM OrderModel WHERE order_id = :id");
+        Query query = s.createQuery("FROM OrderDetailsModel WHERE order_id = :id");
         // ensure we use parameters to avoid potential sql injection
         query.setParameter("id", orderId);
 
@@ -139,10 +138,6 @@ public class OrderDetailsDao implements Crudable<OrderDetailsModel> {
         List<OrderDetailsModel> results = query.getResultList();
 
         s.close();
-
-        // ensure that we have results, if not return null
-        if (results.size() == 0)
-            return null;
 
         return results;
     }
