@@ -3,14 +3,8 @@ package com.revature.restaurant_api.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.restaurant_api.menu.MenuItem;
 import com.revature.restaurant_api.menu.MenuItemDao;
+import com.revature.restaurant_api.menu.MenuItemServlet;
 import com.revature.restaurant_api.menu.MenuService;
-import com.revature.restaurant_api.orderdetails.OrderDetailsDao;
-import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
-import com.revature.restaurant_api.orderdetails.OrderDetailsService;
-import com.revature.restaurant_api.orders.OrderModel;
-import com.revature.restaurant_api.orders.OrderService;
-import com.revature.restaurant_api.orders.OrdersDao;
-import com.revature.restaurant_api.orders.OrdersServlet;
 import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
@@ -55,8 +49,7 @@ public class ServletContext {
         conf.addAnnotatedClass(UsersModel.class);
         conf.addAnnotatedClass(MenuItem.class);
         conf.addAnnotatedClass(UserPaymentModel.class);
-        conf.addAnnotatedClass(OrderModel.class);
-        conf.addAnnotatedClass(OrderDetailsModel.class);
+
 
         // and finally build the session factory
         sessionFactory = conf.buildSessionFactory();
@@ -88,11 +81,7 @@ public class ServletContext {
 
             UserPaymentService userPaymentService = new UserPaymentService(userPaymentDao);
             UsersService usersService = new UsersService(usersDao);
-            OrderService orderService = new OrderService(ordersDao, userPaymentService);
             MenuService menuService = new MenuService(menuItemDao);
-            OrderDetailsService orderDetailsService = new OrderDetailsService(orderDetailsDao, orderService, menuService);
-
-            orderService.setOrderDetailsService(orderDetailsService);
 
             TokenHandler.setupInstance(objectMapper, usersService);
 
@@ -108,6 +97,9 @@ public class ServletContext {
 
             tomcat.addServlet("", "AuthServlet", new AuthServlet(usersService, objectMapper));
             standardContext.addServletMappingDecoded("/auth", "AuthServlet");
+
+            tomcat.addServlet("", "MenuServlet", new MenuItemServlet(menuService, objectMapper));
+            standardContext.addServletMappingDecoded("/menu", "MenuServlet");
 
             // tomcat.setPort(3000); // Do not change port from 8080, leave default. This is just to show you can alter the ports. BEcause certain cloud providers sometimes change their ports. they use just 80 or 8080
 

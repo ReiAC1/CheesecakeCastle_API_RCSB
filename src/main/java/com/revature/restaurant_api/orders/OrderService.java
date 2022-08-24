@@ -1,14 +1,12 @@
-package com.revature.restaurant_api.orders;
+package com.revature.restaurant_api.payments.orders;
 
 import com.revature.restaurant_api.orderdetails.OrderDetailsModel;
 import com.revature.restaurant_api.orderdetails.OrderDetailsService;
-import com.revature.restaurant_api.payments.UserPaymentDao;
 import com.revature.restaurant_api.payments.UserPaymentModel;
 import com.revature.restaurant_api.payments.UserPaymentService;
 import com.revature.restaurant_api.users.UsersModel;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService {
@@ -47,16 +45,18 @@ public class OrderService {
             return false;
 
         double newValue = 0;
-        double difference = model.getAmount();
+        double difference = 0;
 
         List<OrderDetailsModel> orderDetailsModelList = orderDetailsService.getAllByOrderID(model.getId());
 
         for (OrderDetailsModel om : orderDetailsModelList) {
             newValue += om.getItem().getCost() * om.getQuantity();
         }
+        difference = newValue - model.getAmount();
 
-        difference -= newValue;
+        System.out.println(newValue);
 
+        model.setAmount(newValue);
         model.getPayment().setBalance(model.getPayment().getBalance() - difference);
 
         paymentService.update(model.getPayment());

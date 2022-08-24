@@ -62,7 +62,7 @@ public class NewMenuItemRequest {
     }
 
     public boolean getIsVegetarian(){
-        return getIsVegetarian();
+        return isVegetarian;
     }
 
     public void setVegetarian(boolean isVegetarian) {

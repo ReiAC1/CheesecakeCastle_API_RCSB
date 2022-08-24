@@ -1,4 +1,4 @@
-package com.revature.restaurant_api.orders;
+package com.revature.restaurant_api.payments.orders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

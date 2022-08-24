@@ -81,15 +81,8 @@ public class UsersServlet extends HttpServlet implements Authable {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         EditUsersRequest editUser = objectMapper.readValue(req.getInputStream(), EditUsersRequest.class);
-
-        if (editUser == null) {
-            res.setStatus(401);
-            return;
-        }
-
+        if (!checkAuth(req,res)) return;
         int id = editUser.getId();
-
-        if (!checkAuth(id, req,res)) return;
         String email = editUser.getEmail();
         if (id > 0){
             usersService.remove(id);
@@ -104,14 +97,7 @@ public class UsersServlet extends HttpServlet implements Authable {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         EditUsersRequest editUsersRequest = objectMapper.readValue(req.getInputStream(), EditUsersRequest.class);
-
-
-        if (editUsersRequest == null) {
-            res.setStatus(401);
-            return;
-        }
-
-        if (!checkAuth(editUsersRequest.getId(), req,res)) return;
+        if (!checkAuth(req,res)) return;
         try{
             usersService.update(editUsersRequest);
             res.getWriter().write("User has successfully updated");

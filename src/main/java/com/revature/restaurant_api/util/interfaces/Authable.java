@@ -12,7 +12,7 @@ import java.io.IOException;
 public interface Authable {
 
     // default allows for implementation at the interface
-    default boolean checkAuth(int userID, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    default boolean checkAuth(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // the login token should be stored in our session
         String loginToken = (String)req.getSession().getAttribute("authMember");
 
@@ -24,18 +24,7 @@ public interface Authable {
 
         // try to get the UsersModel associated with the header
         UsersModel uModel = TokenHandler.getInstance().getAuthUser(loginToken);
-
-        if (uModel == null) {
-            resp.setStatus(401);
-            return false;
-        }
-
-        if (uModel.getId() != userID && !uModel.getAdmin()) {
-            resp.setStatus(401);
-            return false;
-        }
-
-        return true;
+        return uModel != null;
     }
 
     // here's another version if you had a hypothetical admin user

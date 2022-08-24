@@ -111,19 +111,19 @@ public class MenuItemDao implements Crudable<MenuItem> {
     //maybe cast to a
     public boolean duplicateCheck(String dishName){
         try{
-            Session itemSession = sessionFactory.openSession();
-            Transaction transaction = itemSession.beginTransaction();
-            Query query = itemSession.createQuery("from MenuItem where dish_name= :dishName");
-            query.setParameter("dish_name", dishName);
-            MenuItem toCheck = (MenuItem) query.uniqueResult();
+            Session userSession = sessionFactory.openSession();
+            Transaction transaction = userSession.beginTransaction();
+            Query query = userSession.createQuery("from MenuItem where dishname= :dishname");
+            query.setParameter("dishname", dishName);
+
+            MenuItem newMenuItem = (MenuItem) query.uniqueResult();
             transaction.commit();
-            itemSession.close();
+            userSession.close();
+            if(newMenuItem == null) return true;
 
-            if(dishName == null) return true;
+            return newMenuItem.getDishName().equals(dishName);
 
-            return toCheck.getDishName().equals(dishName);
-
-        }catch(HibernateException e){
+         }catch(HibernateException e){
             e.printStackTrace();
             return false;
         }
